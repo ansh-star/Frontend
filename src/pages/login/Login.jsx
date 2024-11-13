@@ -1,38 +1,45 @@
-import React, { useState } from 'react';
-import axios from 'axios';
+import React, { useState } from "react";
+import axios from "axios";
 
 const Login = () => {
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [otp, setOtp] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [otp, setOtp] = useState("");
   const [otpSent, setOtpSent] = useState(false);
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
 
   const handleSendOtp = async () => {
     try {
-      const response = await axios.post('http://54.196.117.245:3001/send-otp', { phone: phoneNumber });
+      const response = await axios.post(
+        "http://54.198.216.159:3000/api/admin/login",
+        { mobileNumber: phoneNumber }
+      );
+
       if (response.data) {
         setOtpSent(true);
-        setMessage('OTP sent successfully.');
+        setMessage("OTP sent successfully.");
       } else {
-        setMessage('Failed to send OTP. Please try again.');
+        setMessage("Failed to send OTP. Please try again.");
       }
     } catch (error) {
-      setMessage('Error occurred while sending OTP.');
+      setMessage("Error occurred while sending OTP.");
       console.error(error);
     }
   };
 
   const handleVerifyOtp = async () => {
     try {
-      const response = await axios.post('http://54.196.117.245:3001/verify-otp', { phone: phoneNumber, otp });
+      const response = await axios.post(
+        "http://54.196.117.245:3001/verify-otp",
+        { mobileNumber: phoneNumber, otp }
+      );
       if (response.data) {
-        setMessage('Login successful!');
+        setMessage("Login successful!");
         // Additional login success handling can go here
       } else {
-        setMessage('Invalid OTP. Please try again.');
+        setMessage("Invalid OTP. Please try again.");
       }
     } catch (error) {
-      setMessage('Error occurred while verifying OTP.');
+      setMessage("Error occurred while verifying OTP.");
       console.error(error);
     }
   };
