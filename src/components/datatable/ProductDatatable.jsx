@@ -1,11 +1,38 @@
 import "./datatable.scss";
 import { DataGrid } from "@mui/x-data-grid";
-import { userColumns, userRows } from "../../datatablesource";
+import { ProductColumns, userRows } from "../../datatablesource";
 import { Link } from "react-router-dom";
-import { useState } from "react";
-
-const Datatable = () => {
+import { useEffect, useState } from "react";
+import axios from "axios";
+import Cookies from "js-cookie";
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const ProductDatatable = () => {
   const [data, setData] = useState(userRows);
+
+  useEffect(() => {
+    const token = Cookies.get("token");
+    async function getProduct() {
+      try {
+        const response = await axios.get(
+          `${BACKEND_URL}/api/product?pageNumber=1&limit=10`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        console.log(response);
+        if (response.data.success) {
+          setData(response.data.products);
+        } else {
+          throw new Error(response.data.message);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    getProduct();
+  }, []);
 
   const handleDelete = (id) => {
     setData(data.filter((item) => item.id !== id));
@@ -44,13 +71,14 @@ const Datatable = () => {
       <DataGrid
         className="datagrid"
         rows={data}
-        columns={userColumns.concat(actionColumn)}
-        pageSize={9}
-        rowsPerPageOptions={[9]}
+        columns={ProductColumns.concat(actionColumn)}
+        pageSize={10}
+        rowsPerPageOptions={[10]}
         checkboxSelection
+        getRowId={(row) => row._id}
       />
     </div>
   );
 };
 
-export default Datatable;
+export default ProductDatatable;
