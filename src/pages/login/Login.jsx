@@ -1,13 +1,11 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import axios from "axios";
-import { AdminContext } from "../../context/adminContext";
 import { Link, useNavigate } from "react-router-dom";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 const Login = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
-  const ctx = useContext(AdminContext);
   const navigate = useNavigate();
   const [otp, setOtp] = useState("");
   const [otpSent, setOtpSent] = useState(false);
@@ -15,11 +13,12 @@ const Login = () => {
 
   const handleSendOtp = async () => {
     try {
-      const response = await axios.post(`${BACKEND_URL}/api/admin/login`, {
+      const response = await axios.post(`${BACKEND_URL}/api/user/login`, {
         mobileNumber: phoneNumber,
+        role: true,
       });
 
-      if (response.data) {
+      if (response.data.success) {
         setOtpSent(true);
         setMessage("OTP sent successfully.");
       } else {
@@ -33,16 +32,13 @@ const Login = () => {
 
   const handleVerifyOtp = async () => {
     try {
-      const response = await axios.post(`${BACKEND_URL}/api/admin/verify-otp`, {
+      const response = await axios.post(`${BACKEND_URL}/api/user/verify-otp`, {
         mobileNumber: phoneNumber,
         otp,
       });
-
-      ctx.setUserData(response.data?.user);
-      navigate("/");
-
-      if (response.data) {
-        setMessage("Login successful!");
+      if (response.data.success) {
+        localStorage.setItem("token", response.data.token);
+        navigate("/");
         // Additional login success handling can go here
       } else {
         setMessage("Invalid OTP. Please try again.");

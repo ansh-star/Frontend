@@ -4,13 +4,12 @@ import { ProductColumns, userRows } from "../../datatablesource";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import Cookies from "js-cookie";
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const ProductDatatable = () => {
   const [data, setData] = useState(userRows);
 
   useEffect(() => {
-    const token = Cookies.get("token");
+    const token = localStorage.getItem("token");
     async function getProduct() {
       try {
         const response = await axios.get(

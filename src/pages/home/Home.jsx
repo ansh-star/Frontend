@@ -6,13 +6,12 @@ import Table from "../../components/table/Table";
 import { useContext, useEffect } from "react";
 import { AdminContext } from "../../context/adminContext";
 import { useNavigate } from "react-router-dom";
-import Cookies from "js-cookie";
 const Home = () => {
   const ctx = useContext(AdminContext);
 
   const navigate = useNavigate();
   useEffect(() => {
-    const token = Cookies.get("token");
+    const token = localStorage.getItem("token");
     if (!token) {
       navigate("/login");
     }

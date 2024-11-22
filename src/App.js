@@ -7,7 +7,7 @@ import "./pages/login/Login.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { productInputs, userInputs } from "./formSource";
 import "./style/dark.scss";
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import { DarkModeContext } from "./context/darkModeContext";
 import Signup from "./pages/signup/Signup";
 import WholeSalerList from "./pages/list/WholeSalerList";
