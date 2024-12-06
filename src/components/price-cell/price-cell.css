@@ -1,0 +1,11 @@
+.priceCell {
+  display: flex;
+  align-items: center;
+  outline: none;
+  border: none;
+  width: 100%;
+  background-color: transparent;
+}
+.form-pricCell {
+  width: 80%;
+}

@@ -1,3 +1,5 @@
+import PriceCell from "./components/price-cell/price-cell";
+
 const handleOpen = (licenseImages) => {
   // Functionality for opening the modal or viewing images
   console.log("Opening modal for license images:", licenseImages);
@@ -16,39 +18,41 @@ export const WholesalerColumn = [
     width: 230,
   },
 ];
-
-
 export const ProductColumns = [
-  { field: "_id", headerName: "ID", width: 70 },
+  { field: "_id", headerName: "ID", width: 230 },
   {
-    field: "Medicine_Name",
+    field: "Medicine Name",
     headerName: "Product Name",
     width: 230,
     renderCell: (params) => {
       return (
         <div className="cellWithImg">
-          <img
-            className="cellImg"
-            src={params.row.Image_URL || "https://via.placeholder.com/100"}
-            alt="avatar"
-          />
+          {params.row.Image_URLS.length !== 0 && (
+            <img
+              className="cellImg"
+              src={params.row.Image_URLS[0]}
+              alt="avatar"
+            />
+          )}
           {params.row.Medicine_Name}
         </div>
       );
     },
   },
   {
-    field: "Side_effects",
-    headerName: "Side Effects",
-    width: 230,
-  },
-  {
     field: "Composition",
     headerName: "Composition",
     width: 230,
   },
+  {
+    field: "mrp",
+    headerName: "Price",
+    width: 130,
+    renderCell: (params) => {
+      return <PriceCell params={params} />;
+    },
+  },
 ];
-
 export const userRows = [
   {
     _id: 1,

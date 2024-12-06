@@ -18,7 +18,10 @@ const Signup = () => {
     dealershipLicenseImage: "", // Base64 string
     role: Roles.WHOLESALER, // Fixed role for this form
   });
-
+  const [message, setMessage] = useState("");
+  const [otpSent, setOtpSent] = useState(false);
+  const [otp, setOtp] = useState("");
+  const [signupStatus, setSignUpStatus] = useState(true);
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -44,6 +47,7 @@ const Signup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      setSignUpStatus(false);
       const response = await axios.post(
         `${BACKEND_URL}/api/user/signup`,
         formData,
@@ -51,14 +55,39 @@ const Signup = () => {
           headers: { "Content-Type": "application/json" },
         }
       );
-      alert("User signed up successfully!");
-      navigate("/");
+      if (response.data.success) {
+        setMessage("Signup successful. Please Enter your OTP.");
+        setOtpSent(true);
+      } else {
+        setMessage("Failed to sign up. Please try again.");
+        setOtpSent(false);
+      }
     } catch (error) {
       console.error("Error signing up user:", error.response?.data || error);
       alert("Failed to sign up. Please try again.");
+    } finally {
+      setSignUpStatus(true);
     }
   };
-
+  const handleVerifyOtp = async () => {
+    try {
+      const response = await axios.post(`${BACKEND_URL}/api/user/verify-otp`, {
+        mobileNumber: formData.mobileNumber,
+        otp,
+      });
+      if (response.data.success) {
+        localStorage.setItem("token", response.data.token);
+        localStorage.setItem("role", Roles.WHOLESALER);
+        navigate("/");
+        // Additional login success handling can go here
+      } else {
+        setMessage("Invalid OTP. Please try again.");
+      }
+    } catch (error) {
+      setMessage("Error occurred while verifying OTP.");
+      console.error(error);
+    }
+  };
   return (
     <div className="signup-container">
       <h2 className="signup-title">Signup as Wholesaler</h2>
@@ -139,13 +168,35 @@ const Signup = () => {
             required
           />
         </div>
-        <button type="submit" className="submit-button">
-          Signup
-        </button>
+        {otpSent ? (
+          <div className="form-group">
+            <label>OTP:</label>
+            <input
+              type="text"
+              value={otp}
+              onChange={(e) => setOtp(e.target.value)}
+              placeholder="Enter the OTP"
+              required
+            />
+
+            <button onClick={handleVerifyOtp} className="verify-button">
+              Verify OTP
+            </button>
+          </div>
+        ) : (
+          <button
+            onClick={handleSubmit}
+            className="submit-button"
+            disabled={!signupStatus}
+          >
+            {signupStatus ? "Signup" : "Sending OTP..."}
+          </button>
+        )}
         <p style={{ textAlign: "center" }}>
           Already have an account? <Link to="/login"> Login</Link>
         </p>
       </form>
+      {message && <p>{message}</p>}
     </div>
   );
 };

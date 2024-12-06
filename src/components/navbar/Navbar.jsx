@@ -10,8 +10,7 @@ const Navbar = () => {
   const { dispatch } = useContext(DarkModeContext);
   const navigate = useNavigate();
   const handleLogout = async () => {
-    const token = Cookies.get("token");
-    console.log(token);
+    const token = localStorage.getItem("token");
     const response = await axios.post(
       `${process.env.REACT_APP_BACKEND_URL}/api/user/logout`,
       {
@@ -21,6 +20,7 @@ const Navbar = () => {
       }
     );
     console.log(response);
+    localStorage.clear();
     navigate("/login");
   };
   return (

@@ -10,9 +10,10 @@ const Login = () => {
   const [otp, setOtp] = useState("");
   const [otpSent, setOtpSent] = useState(false);
   const [message, setMessage] = useState("");
-
+  const [loginStatus, setLoginStatus] = useState(true);
   const handleSendOtp = async () => {
     try {
+      setLoginStatus(false);
       const response = await axios.post(`${BACKEND_URL}/api/user/login`, {
         mobileNumber: phoneNumber,
         role: true,
@@ -27,6 +28,8 @@ const Login = () => {
     } catch (error) {
       setMessage("Error occurred while sending OTP.");
       console.error(error);
+    } finally {
+      setLoginStatus(true);
     }
   };
 
@@ -38,6 +41,7 @@ const Login = () => {
       });
       if (response.data.success) {
         localStorage.setItem("token", response.data.token);
+        localStorage.setItem("role", response.data.user.role);
         navigate("/");
         // Additional login success handling can go here
       } else {
@@ -78,7 +82,13 @@ const Login = () => {
           </button>
         </div>
       ) : (
-        <button onClick={handleSendOtp}>Send OTP</button>
+        <button
+          onClick={handleSendOtp}
+          className="submit-button"
+          disabled={!loginStatus}
+        >
+          {loginStatus ? "Send OTP" : "Sending OTP..."}
+        </button>
       )}
       <p style={{ textAlign: "center" }}>
         Don't have an account? <Link to="/signup">Signup</Link>

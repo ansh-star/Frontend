@@ -6,32 +6,38 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const ProductDatatable = () => {
-  const [data, setData] = useState(userRows);
+  const [data, setData] = useState([]);
+  const [page, setPage] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
+
+  async function getProduct() {
+    setIsLoading(true);
+    const token = localStorage.getItem("token");
+    try {
+      const response = await axios.get(
+        `${BACKEND_URL}/api/product?pageNumber=${page}&limit=100`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log(response);
+      if (response.data.success) {
+        setData((prev) => [...prev, ...response.data.products]);
+      } else {
+        throw new Error(response.data.message);
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  }
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    async function getProduct() {
-      try {
-        const response = await axios.get(
-          `${BACKEND_URL}/api/product?pageNumber=1&limit=10`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        console.log(response);
-        if (response.data.success) {
-          setData(response.data.products);
-        } else {
-          throw new Error(response.data.message);
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    }
-    getProduct();
-  }, []);
+    getProduct(page);
+  }, [page]);
 
   const handleDelete = (id) => {
     setData(data.filter((item) => item.id !== id));
@@ -45,9 +51,6 @@ const ProductDatatable = () => {
       renderCell: (params) => {
         return (
           <div className="cellAction">
-            <Link to="/users/test" style={{ textDecoration: "none" }}>
-              <div className="viewButton">View</div>
-            </Link>
             <div
               className="deleteButton"
               onClick={() => handleDelete(params.row.id)}
@@ -61,20 +64,26 @@ const ProductDatatable = () => {
   ];
   return (
     <div className="datatable">
-      <div className="datatableTitle">
+      {/* <div className="datatableTitle">
         Add New User
         <Link to="/users/new" className="link">
           Add New
         </Link>
-      </div>
+      </div> */}
       <DataGrid
         className="datagrid"
         rows={data}
         columns={ProductColumns.concat(actionColumn)}
         pageSize={10}
         rowsPerPageOptions={[10]}
-        checkboxSelection
         getRowId={(row) => row._id}
+        pagination
+        onPageChange={(newPage) => {
+          if ((newPage + 1) % 10 === 0) {
+            setPage((prev) => prev + 1);
+          }
+        }} // Handle page change
+        loading={isLoading} // Show spinner while loading
       />
     </div>
   );

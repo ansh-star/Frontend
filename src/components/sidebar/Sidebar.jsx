@@ -10,11 +10,11 @@ import { Link } from "react-router-dom";
 import { DarkModeContext } from "../../context/darkModeContext";
 import { useContext } from "react";
 import Roles from "../../helper/roles";
-import { AdminContext } from "../../context/adminContext";
 
 const Sidebar = () => {
   const { dispatch } = useContext(DarkModeContext);
-  const ctx = useContext(AdminContext);
+  const role = localStorage.getItem("role");
+  console.log(localStorage.getItem("role"));
   return (
     <div className="sidebar">
       <div className="top">
@@ -31,12 +31,14 @@ const Sidebar = () => {
             <span>Dashboard</span>
           </li>
           <p className="title">LISTS</p>
-          <Link to="/users" style={{ textDecoration: "none" }}>
-            <li>
-              <PersonOutlineIcon className="icon" />
-              <span>Wholesaler Requests</span>
-            </li>
-          </Link>
+          {role == Roles.ADMIN && (
+            <Link to="/users" style={{ textDecoration: "none" }}>
+              <li>
+                <PersonOutlineIcon className="icon" />
+                <span>Wholesaler Requests</span>
+              </li>
+            </Link>
+          )}
           <Link to="/products" style={{ textDecoration: "none" }}>
             <li>
               <StoreIcon className="icon" />

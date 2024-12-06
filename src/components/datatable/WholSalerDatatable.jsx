@@ -13,33 +13,41 @@ import Tab from "@mui/material/Tab";
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 const WholeSalerDatatable = () => {
-  const [data, setData] = useState(userRows);
+  const [data, setData] = useState(userRows); // Wholesaler data
+  const [page, setPage] = useState(1); // Current page number
+  const [isLoading, setIsLoading] = useState(false); // Loading state
   const [open, setOpen] = useState(false); // Modal open state
   const [selectedImages, setSelectedImages] = useState([]); // License images array
   const [tabIndex, setTabIndex] = useState(0); // Tab index for page navigation
 
-  useEffect(() => {
-    const token = Cookies.get("token");
-    async function getWholesalers() {
-      try {
-        const response = await axios.get(`${BACKEND_URL}/api/user/wholesaler`, {
+  async function getWholesalers() {
+    try {
+      const token = Cookies.get("token");
+      setIsLoading(true);
+      const response = await axios.get(
+        `${BACKEND_URL}/api/user/wholesaler?pageNumber=${page}`,
+        {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        });
-        console.log(response);
-        if (response.data.success) {
-          setData(response.data.wholesalerRequests);
-        } else {
-          throw new Error(response.data.message);
         }
-      } catch (error) {
-        console.error(error);
+      );
+      console.log(response);
+      if (response.data.success) {
+        setData(response.data.wholesalerRequests);
+      } else {
+        throw new Error(response.data.message);
       }
+    } catch (error) {
+      console.error("Error fetching wholesalers:", error);
+    } finally {
+      setIsLoading(false);
     }
-    // Uncomment this to fetch data
-    // getWholesalers();
-  }, []);
+  }
+
+  useEffect(() => {
+    getWholesalers(); // Fetch data whenever the page changes
+  }, [page]);
 
   const handleOpen = (images) => {
     setSelectedImages(images);
@@ -52,12 +60,12 @@ const WholeSalerDatatable = () => {
     setSelectedImages([]);
   };
 
-  const handleDelete = (id) => {
-    setData(data.filter((item) => item.id !== id));
-  };
-
   const handleTabChange = (event, newValue) => {
     setTabIndex(newValue);
+  };
+
+  const handleDelete = (id) => {
+    setData(data.filter((item) => item._id !== id));
   };
 
   const actionColumn = [
@@ -68,12 +76,15 @@ const WholeSalerDatatable = () => {
       renderCell: (params) => {
         return (
           <div className="cellAction">
-            <Link to="/users/test" style={{ textDecoration: "none" }}>
+            <Link
+              to={`/users/${params.row._id}`}
+              style={{ textDecoration: "none" }}
+            >
               <div className="viewButton">View</div>
             </Link>
             <div
               className="deleteButton"
-              onClick={() => handleDelete(params.row.id)}
+              onClick={() => handleDelete(params.row._id)}
             >
               Delete
             </div>
@@ -85,12 +96,12 @@ const WholeSalerDatatable = () => {
 
   return (
     <div className="datatable">
-      <div className="datatableTitle">
+      {/* <div className="datatableTitle">
         Add New User
         <Link to="/users/new" className="link">
           Add New
         </Link>
-      </div>
+      </div> */}
       <DataGrid
         className="datagrid"
         rows={data}
@@ -109,7 +120,11 @@ const WholeSalerDatatable = () => {
                     key={index}
                     src={image || "https://via.placeholder.com/150"}
                     alt={`License ${index + 1}`}
-                    style={{ width: "100px", height: "100px", objectFit: "cover" }}
+                    style={{
+                      width: "100px",
+                      height: "100px",
+                      objectFit: "cover",
+                    }}
                   />
                 ))}
                 {params.row.licenseImages.length > 2 && <span>+ More</span>}
@@ -119,16 +134,19 @@ const WholeSalerDatatable = () => {
         ])}
         pageSize={10}
         rowsPerPageOptions={[10]}
-        checkboxSelection
         getRowId={(row) => row._id}
+        pagination
+        onPageChange={(newPage) => setPage(newPage + 1)} // Handle page change
+        loading={isLoading} // Show spinner while loading
       />
 
       {/* Modal to show license images */}
       <Dialog open={open} onClose={handleClose} maxWidth="sm">
         <DialogContent style={{ textAlign: "center" }}>
           <Tabs value={tabIndex} onChange={handleTabChange} centered>
-            <Tab label="Page 1" />
-            <Tab label="Page 2" />
+            {selectedImages.map((_, index) => (
+              <Tab key={index} label={`Page ${index + 1}`} />
+            ))}
           </Tabs>
           <div style={{ marginTop: "20px" }}>
             {selectedImages[tabIndex] ? (
