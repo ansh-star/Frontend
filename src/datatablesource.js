@@ -54,6 +54,11 @@ export const ProductColumns = [
       return <PriceCell params={params} />;
     },
   },
+  {
+    field: "totalStock",
+    headerName: "Total Stock",
+    width: 130,
+  },
 ];
 export const userRows = [
   {

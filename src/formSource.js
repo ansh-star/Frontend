@@ -249,9 +249,15 @@ export const productInputs = [
     placeholder: "Enter Scheme Quantity",
   },
   {
-    id: "Free_quantity",
+    id: "free_quantity",
     label: "Free Quantity",
     type: "number",
     placeholder: "Enter Free Quantity",
+  },
+  {
+    id: "total_stock",
+    label: "Total Stock",
+    type: "number",
+    placeholder: "Enter Total Stock",
   },
 ];

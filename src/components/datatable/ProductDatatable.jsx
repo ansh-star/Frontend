@@ -23,6 +23,7 @@ const ProductDatatable = () => {
   const [open, setOpen] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const [gridPage, setGridPage] = useState(0); // For DataGrid pagination
+  const [totalCount, setTotalCount] = useState(0);
   const navigate = useNavigate();
 
   async function getProduct(pageNumber = 1, append = false) {
@@ -41,6 +42,7 @@ const ProductDatatable = () => {
         setData((prev) =>
           append ? [...prev, ...response.data.products] : response.data.products
         );
+        setTotalCount(response.data.totalDocuments);
       } else {
         throw new Error(response.data.message);
       }
@@ -183,6 +185,7 @@ const ProductDatatable = () => {
           }
         }}
         loading={isLoading}
+        rowCount={totalCount}
       />
 
       {/* Confirmation Dialog */}
