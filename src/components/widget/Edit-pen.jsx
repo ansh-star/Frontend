@@ -5,7 +5,7 @@ export default function EditPen({ onClick }) {
       width="16"
       height="16"
       fill="currentColor"
-      class="bi bi-pencil-square"
+      className="bi bi-pencil-square"
       viewBox="0 0 16 16"
       onClick={onClick}
       style={{ cursor: "pointer" }}

@@ -1,30 +1,46 @@
-import "./datatable.scss";
+import "./ProductDatatable.scss";
 import { DataGrid } from "@mui/x-data-grid";
 import { ProductColumns, userRows } from "../../datatablesource";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import axios from "axios";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from "@mui/material";
+
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+
 const ProductDatatable = () => {
   const [data, setData] = useState([]);
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [selectedId, setSelectedId] = useState(null);
+  const [gridPage, setGridPage] = useState(0); // For DataGrid pagination
+  const navigate = useNavigate();
 
-  async function getProduct() {
+  async function getProduct(pageNumber = 1, append = false) {
     setIsLoading(true);
     const token = localStorage.getItem("token");
     try {
       const response = await axios.get(
-        `${BACKEND_URL}/api/product?pageNumber=${page}&limit=100`,
+        `${BACKEND_URL}/api/product?pageNumber=${pageNumber}&limit=100`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
       );
-      console.log(response);
       if (response.data.success) {
-        setData((prev) => [...prev, ...response.data.products]);
+        setData((prev) =>
+          append ? [...prev, ...response.data.products] : response.data.products
+        );
       } else {
         throw new Error(response.data.message);
       }
@@ -36,11 +52,62 @@ const ProductDatatable = () => {
   }
 
   useEffect(() => {
-    getProduct(page);
+    getProduct(page, true);
   }, [page]);
 
-  const handleDelete = (id) => {
-    setData(data.filter((item) => item.id !== id));
+  const handleDelete = async () => {
+    try {
+      const response = await axios.delete(
+        `${BACKEND_URL}/api/product/${selectedId}`,
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        }
+      );
+      console.log("deleting product", response);
+      if (!response.data.success) {
+        throw new Error(response.data.message);
+      } else {
+        setData(data.filter((item) => item._id !== selectedId));
+        setOpen(false);
+      }
+    } catch (error) {
+      return;
+    }
+  };
+
+  const handleDialogOpen = (id) => {
+    setSelectedId(id);
+    setOpen(true);
+  };
+
+  const handleDialogClose = () => {
+    setOpen(false);
+  };
+
+  const handleSearch = async (e) => {
+    e.preventDefault();
+    const search = e.target[0].value.trim();
+    if (search) {
+      setIsLoading(true);
+      const response = await axios.get(
+        `${BACKEND_URL}/api/product/search?search=${search}&limit=100`,
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        }
+      );
+      if (response.data.success) {
+        setData(response.data.products);
+        setPage(1); // Reset backend pagination
+        setGridPage(0); // Reset DataGrid pagination
+      } else {
+        setData([]);
+      }
+      setIsLoading(false);
+    } else {
+      setPage(1);
+      setGridPage(0); // Reset to the first page of DataGrid
+      getProduct(1, false);
+    }
   };
 
   const actionColumn = [
@@ -51,25 +118,56 @@ const ProductDatatable = () => {
       renderCell: (params) => {
         return (
           <div className="cellAction">
-            <div
-              className="deleteButton"
-              onClick={() => handleDelete(params.row.id)}
+            <Button
+              variant="contained"
+              style={{
+                fontSize: "0.7em",
+                padding: "0.2em 10px",
+                minWidth: "30px",
+              }}
+              onClick={() => navigate(`/products/${params.row._id}/edit`)}
+            >
+              Edit
+            </Button>
+            <Button
+              variant="contained"
+              color="error"
+              onClick={() => handleDialogOpen(params.row._id)}
+              style={{
+                fontSize: "0.7em",
+                padding: "0.2em 10px",
+                minWidth: "30px",
+              }}
             >
               Delete
-            </div>
+            </Button>
           </div>
         );
       },
     },
   ];
+
   return (
     <div className="datatable">
-      {/* <div className="datatableTitle">
-        Add New User
-        <Link to="/users/new" className="link">
+      <div className="datatableTitle">
+        <form onSubmit={handleSearch} className="search">
+          <input
+            type="text"
+            placeholder="Search..."
+            onChange={(e) => {
+              if (!e.target.value.trim()) {
+                setPage(1);
+                setGridPage(0);
+                getProduct(1, false);
+              }
+            }}
+          />
+          <SearchOutlinedIcon />
+        </form>
+        <Link to="/products/new" className="link">
           Add New
         </Link>
-      </div> */}
+      </div>
       <DataGrid
         className="datagrid"
         rows={data}
@@ -78,13 +176,34 @@ const ProductDatatable = () => {
         rowsPerPageOptions={[10]}
         getRowId={(row) => row._id}
         pagination
+        page={gridPage} // Controlled pagination state
         onPageChange={(newPage) => {
-          if ((newPage + 1) % 10 === 0) {
+          setGridPage(newPage);
+          if ((newPage + 1) * 10 >= data.length) {
             setPage((prev) => prev + 1);
           }
-        }} // Handle page change
-        loading={isLoading} // Show spinner while loading
+        }}
+        loading={isLoading}
       />
+
+      {/* Confirmation Dialog */}
+      <Dialog open={open} onClose={handleDialogClose}>
+        <DialogTitle>Confirm Delete</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you want to delete this item? This action cannot be
+            undone.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDialogClose} color="primary">
+            No
+          </Button>
+          <Button onClick={handleDelete} color="error">
+            Yes
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };

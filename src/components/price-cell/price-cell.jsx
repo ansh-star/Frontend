@@ -52,14 +52,14 @@ export default function PriceCell({ params }) {
           changePrice(e);
         }}
       />
-      {!editing && (
+      {/* {!editing && (
         <EditPen
           onClick={() => {
             setEditing(true);
             setTimeout(() => pCell.current.focus(), 0);
           }}
         />
-      )}
+      )} */}
     </div>
   );
 }

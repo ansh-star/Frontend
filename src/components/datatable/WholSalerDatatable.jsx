@@ -1,28 +1,33 @@
 import "./datatable.scss";
 import { DataGrid } from "@mui/x-data-grid";
 import { WholesalerColumn, userRows } from "../../datatablesource";
-import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import Cookies from "js-cookie";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
-
+import {
+  Button,
+  DialogActions,
+  DialogTitle,
+  DialogContentText,
+} from "@mui/material";
+const token = localStorage.getItem("token");
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 const WholeSalerDatatable = () => {
-  const [data, setData] = useState(userRows); // Wholesaler data
-  const [page, setPage] = useState(1); // Current page number
-  const [isLoading, setIsLoading] = useState(false); // Loading state
-  const [open, setOpen] = useState(false); // Modal open state
-  const [selectedImages, setSelectedImages] = useState([]); // License images array
-  const [tabIndex, setTabIndex] = useState(0); // Tab index for page navigation
+  const [data, setData] = useState(userRows);
+  const [page, setPage] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [selectedImages, setSelectedImages] = useState([]);
+  const [tabIndex, setTabIndex] = useState(0);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false); // State for delete confirmation dialog
+  const [deleteId, setDeleteId] = useState(null); // ID of the wholesaler to delete
 
   async function getWholesalers() {
     try {
-      const token = Cookies.get("token");
       setIsLoading(true);
       const response = await axios.get(
         `${BACKEND_URL}/api/user/wholesaler?pageNumber=${page}`,
@@ -46,13 +51,13 @@ const WholeSalerDatatable = () => {
   }
 
   useEffect(() => {
-    getWholesalers(); // Fetch data whenever the page changes
+    getWholesalers();
   }, [page]);
 
   const handleOpen = (images) => {
     setSelectedImages(images);
     setOpen(true);
-    setTabIndex(0); // Default to the first image
+    setTabIndex(0);
   };
 
   const handleClose = () => {
@@ -64,10 +69,50 @@ const WholeSalerDatatable = () => {
     setTabIndex(newValue);
   };
 
-  const handleDelete = (id) => {
-    setData(data.filter((item) => item._id !== id));
+  const openDeleteDialog = (id) => {
+    setDeleteId(id);
+    setDeleteDialogOpen(true);
   };
 
+  const closeDeleteDialog = () => {
+    setDeleteDialogOpen(false);
+    setDeleteId(null);
+  };
+
+  const confirmDelete = async () => {
+    try {
+      const response = await axios.delete(
+        `${BACKEND_URL}/api/user/${deleteId}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      console.log("deleting user", response);
+      if (!response.data.success) {
+        throw new Error(response.data.message);
+      } else {
+        setData(data.filter((item) => item._id !== deleteId));
+        closeDeleteDialog();
+      }
+    } catch (error) {
+      return;
+    }
+  };
+  const verifyUser = async (id) => {
+    try {
+      const response = await axios.put(
+        `${BACKEND_URL}/api/user/verify-user`,
+        {
+          userId: id,
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      console.log("user verification", response);
+      if (response.data.success) {
+        setData(data.filter((item) => item._id !== id));
+      }
+    } catch (error) {}
+  };
   const actionColumn = [
     {
       field: "action",
@@ -76,18 +121,26 @@ const WholeSalerDatatable = () => {
       renderCell: (params) => {
         return (
           <div className="cellAction">
-            <Link
-              to={`/users/${params.row._id}`}
-              style={{ textDecoration: "none" }}
+            <Button
+              variant="contained"
+              color="success"
+              style={{
+                fontSize: "0.7em",
+              }}
+              onClick={() => verifyUser(params.row._id)}
             >
-              <div className="viewButton">View</div>
-            </Link>
-            <div
-              className="deleteButton"
-              onClick={() => handleDelete(params.row._id)}
+              Verify User
+            </Button>
+            <Button
+              variant="contained"
+              color="error"
+              onClick={() => openDeleteDialog(params.row._id)}
+              style={{
+                fontSize: "0.7em",
+              }}
             >
               Delete
-            </div>
+            </Button>
           </div>
         );
       },
@@ -96,48 +149,48 @@ const WholeSalerDatatable = () => {
 
   return (
     <div className="datatable">
-      {/* <div className="datatableTitle">
-        Add New User
-        <Link to="/users/new" className="link">
-          Add New
-        </Link>
-      </div> */}
       <DataGrid
         className="datagrid"
         rows={data}
-        columns={WholesalerColumn.concat([
-          {
-            field: "licenseImages",
-            headerName: "License Images",
-            width: 230,
-            renderCell: (params) => (
-              <div
-                style={{ display: "flex", gap: "10px", cursor: "pointer" }}
-                onClick={() => handleOpen(params.row.licenseImages)}
-              >
-                {params.row.licenseImages.slice(0, 2).map((image, index) => (
-                  <img
-                    key={index}
-                    src={image || "https://via.placeholder.com/150"}
-                    alt={`License ${index + 1}`}
-                    style={{
-                      width: "100px",
-                      height: "100px",
-                      objectFit: "cover",
-                    }}
-                  />
-                ))}
-                {params.row.licenseImages.length > 2 && <span>+ More</span>}
-              </div>
-            ),
-          },
-        ])}
+        columns={WholesalerColumn.concat(
+          [
+            {
+              field: "licenseImages",
+              headerName: "License Images",
+              width: 230,
+              renderCell: (params) => (
+                <div
+                  style={{ display: "flex", gap: "10px", cursor: "pointer" }}
+                  onClick={() => handleOpen(params.row.delaershipLicenseImage)}
+                >
+                  {params.row.delaershipLicenseImage
+                    ?.slice(0, 2)
+                    .map((image, index) => (
+                      <img
+                        key={index}
+                        src={image || "https://via.placeholder.com/150"}
+                        alt={`License ${index + 1}`}
+                        style={{
+                          width: "100px",
+                          height: "100px",
+                          objectFit: "cover",
+                        }}
+                      />
+                    ))}
+                  {params.row.delaershipLicenseImage?.length > 2 && (
+                    <span>+ More</span>
+                  )}
+                </div>
+              ),
+            },
+          ].concat(actionColumn)
+        )}
         pageSize={10}
         rowsPerPageOptions={[10]}
         getRowId={(row) => row._id}
         pagination
-        onPageChange={(newPage) => setPage(newPage + 1)} // Handle page change
-        loading={isLoading} // Show spinner while loading
+        onPageChange={(newPage) => setPage(newPage + 1)}
+        loading={isLoading}
       />
 
       {/* Modal to show license images */}
@@ -164,6 +217,25 @@ const WholeSalerDatatable = () => {
             )}
           </div>
         </DialogContent>
+      </Dialog>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={deleteDialogOpen} onClose={closeDeleteDialog}>
+        <DialogTitle>Confirm Delete</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you want to delete this wholesaler? This action cannot
+            be undone.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={closeDeleteDialog} color="primary">
+            No
+          </Button>
+          <Button onClick={confirmDelete} color="error">
+            Yes
+          </Button>
+        </DialogActions>
       </Dialog>
     </div>
   );

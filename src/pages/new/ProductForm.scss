@@ -1,0 +1,114 @@
+.new {
+  width: 100%;
+  display: flex;
+
+  .newContainer {
+    flex: 6;
+
+    .top,
+    .bottom {
+      -webkit-box-shadow: 2px 4px 10px 1px rgba(0, 0, 0, 0.47);
+      box-shadow: 2px 4px 10px 1px rgba(201, 201, 201, 0.47);
+      padding: 10px;
+      margin: 20px;
+      display: flex;
+      flex-direction: column;
+
+      h1 {
+        color: lightgray;
+        font-size: 20px;
+      }
+
+      .left {
+        flex: 1;
+        text-align: center;
+
+        .image-upload-container {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          flex-direction: column;
+          height: 100%;
+        }
+
+        img {
+          width: 200px;
+          height: 200px;
+          border-radius: 50%;
+          object-fit: cover;
+        }
+      }
+
+      .right {
+        flex: 2;
+
+        form {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 30px;
+          justify-content: space-around;
+
+          .formInput {
+            width: 40%;
+
+            label {
+              display: flex;
+              align-items: center;
+              gap: 10px;
+
+              .icon {
+                cursor: pointer;
+              }
+            }
+
+            input {
+              width: 100%;
+              padding: 5px;
+              border: none;
+              border-bottom: 1px solid gray;
+            }
+            /* Dropdown container styling */
+            .cityDropdown {
+              position: relative;
+              top: 0;
+              bottom: 100%;
+              width: 100%;
+              max-height: 200px;
+              overflow-y: auto;
+              background-color: #fff;
+              border: 1px solid #ccc;
+              border-radius: 4px;
+              box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+              z-index: 1000;
+              padding: 0;
+
+              li {
+                padding: 10px;
+                cursor: pointer;
+                transition: background-color 0.2s;
+                list-style-type: none;
+              }
+              li:hover {
+                background-color: #f0f0f0;
+              }
+              .noResults {
+                padding: 10px;
+                color: #888;
+                text-align: center;
+              }
+            }
+          }
+
+          .buttons-container {
+            width: 100%;
+            text-align: center;
+
+            .button {
+              margin-right: 10px;
+            }
+          }
+        }
+      }
+    }
+  }
+}

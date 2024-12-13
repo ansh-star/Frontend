@@ -14,7 +14,7 @@ import Roles from "../../helper/roles";
 const Sidebar = () => {
   const { dispatch } = useContext(DarkModeContext);
   const role = localStorage.getItem("role");
-  console.log(localStorage.getItem("role"));
+
   return (
     <div className="sidebar">
       <div className="top">
@@ -32,7 +32,7 @@ const Sidebar = () => {
           </li>
           <p className="title">LISTS</p>
           {role == Roles.ADMIN && (
-            <Link to="/users" style={{ textDecoration: "none" }}>
+            <Link to="/wholesaler-request" style={{ textDecoration: "none" }}>
               <li>
                 <PersonOutlineIcon className="icon" />
                 <span>Wholesaler Requests</span>
@@ -54,14 +54,12 @@ const Sidebar = () => {
             <span>Delivery</span>
           </li>
           <p className="title">USER</p>
-          <li>
-            <AccountCircleOutlinedIcon className="icon" />
-            <span>Profile</span>
-          </li>
-          <li>
-            <ExitToAppIcon className="icon" />
-            <span>Logout</span>
-          </li>
+          <Link to="/profile" style={{ textDecoration: "none" }}>
+            <li>
+              <AccountCircleOutlinedIcon className="icon" />
+              <span>Profile</span>
+            </li>
+          </Link>
         </ul>
       </div>
       <div className="bottom">

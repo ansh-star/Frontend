@@ -12,28 +12,11 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-
-    .search {
-      display: flex;
-      align-items: center;
-      border: 0.5px solid lightgray;
-      padding: 3px;
-
-      input {
-        border: none;
-        outline: none;
-        background: transparent;
-
-        &::placeholder {
-          font-size: 12px;
-        }
-      }
-    }
+    flex-direction: row-reverse;
 
     .items {
       display: flex;
       align-items: center;
-
       .item {
         display: flex;
         align-items: center;

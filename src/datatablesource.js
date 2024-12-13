@@ -1,10 +1,5 @@
 import PriceCell from "./components/price-cell/price-cell";
 
-const handleOpen = (licenseImages) => {
-  // Functionality for opening the modal or viewing images
-  console.log("Opening modal for license images:", licenseImages);
-};
-
 export const WholesalerColumn = [
   { field: "_id", headerName: "ID", width: 70 },
   {
@@ -31,6 +26,13 @@ export const ProductColumns = [
             <img
               className="cellImg"
               src={params.row.Image_URLS[0]}
+              alt="avatar"
+            />
+          )}
+          {params.row.Image_URLS.length === 0 && (
+            <img
+              className="cellImg"
+              src="https://watermarkimage1.s3.ap-south-1.amazonaws.com/watermarkimage.jpg"
               alt="avatar"
             />
           )}
