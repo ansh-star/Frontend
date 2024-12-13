@@ -3,12 +3,9 @@ import Navbar from "../../components/navbar/Navbar";
 import "./home.scss";
 import Widget from "../../components/widget/Widget";
 import Table from "../../components/table/Table";
-import { useContext, useEffect } from "react";
-import { AdminContext } from "../../context/adminContext";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 const Home = () => {
-  const ctx = useContext(AdminContext);
-
   const navigate = useNavigate();
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -17,7 +14,6 @@ const Home = () => {
     }
   }, []);
 
-  console.log("ctx", ctx);
   return (
     <div className="home">
       <Sidebar />

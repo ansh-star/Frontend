@@ -63,7 +63,6 @@ const ProductDatatable = () => {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         }
       );
-      console.log("deleting product", response);
       if (!response.data.success) {
         throw new Error(response.data.message);
       } else {

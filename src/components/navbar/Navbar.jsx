@@ -4,7 +4,6 @@ import { DarkModeContext } from "../../context/darkModeContext";
 import { useContext } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import Cookies from "js-cookie";
 const Navbar = () => {
   const { dispatch } = useContext(DarkModeContext);
   const navigate = useNavigate();
@@ -18,7 +17,6 @@ const Navbar = () => {
         },
       }
     );
-    console.log(response);
     localStorage.clear();
     navigate("/login");
   };

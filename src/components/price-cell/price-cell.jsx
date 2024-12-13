@@ -8,7 +8,6 @@ export default function PriceCell({ params }) {
   const [editing, setEditing] = useState(false);
   const pCell = useRef(null);
   const changePrice = async (e) => {
-    console.log("Editing price", e.target.value);
     const token = localStorage.getItem("token");
     try {
       const response = await axios.put(
@@ -21,14 +20,13 @@ export default function PriceCell({ params }) {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-      console.log(response);
       if (response.data?.success) {
         setPrice(parseFloat(e.target.value));
       } else {
         pCell.current.focus();
       }
     } catch (error) {
-      console.log(error);
+      return;
     }
   };
   return (

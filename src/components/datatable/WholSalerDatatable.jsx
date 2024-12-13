@@ -37,7 +37,6 @@ const WholeSalerDatatable = () => {
           },
         }
       );
-      console.log(response);
       if (response.data.success) {
         setData(response.data.wholesalerRequests);
       } else {
@@ -85,7 +84,6 @@ const WholeSalerDatatable = () => {
         `${BACKEND_URL}/api/user/${deleteId}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      console.log("deleting user", response);
       if (!response.data.success) {
         throw new Error(response.data.message);
       } else {
@@ -107,7 +105,6 @@ const WholeSalerDatatable = () => {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-      console.log("user verification", response);
       if (response.data.success) {
         setData(data.filter((item) => item._id !== id));
       }

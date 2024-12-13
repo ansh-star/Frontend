@@ -116,7 +116,6 @@ const ProductForm = () => {
       axios
         .get(`${BACKEND_URL}/api/cities?prefix=${cityQuery}`)
         .then((response) => {
-          console.log(response);
           if (response.data.success) setCities(response.data.cities);
           else throw new Error("Error fetching cities");
         })
@@ -125,18 +124,6 @@ const ProductForm = () => {
       setCities([]);
     }
   }, [cityQuery]);
-
-  // useEffect(() => {
-  //   if (cityQuery.length > 0) {
-  //     setCities(
-  //       city.filter((city) =>
-  //         city.name.toLowerCase().includes(cityQuery.toLowerCase())
-  //       )
-  //     );
-  //   } else {
-  //     setCities([]);
-  //   }
-  // }, [cityQuery]);
 
   const handleInputChange = (e, key) => {
     setFormData({ ...formData, [key]: e.target.value });
@@ -159,7 +146,6 @@ const ProductForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
     let response;
     if (productId) {
       response = await axios.put(`${BACKEND_URL}/api/product`, formData, {
@@ -170,7 +156,6 @@ const ProductForm = () => {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
     }
-    console.log(response);
     if (response.data.success) {
       navigate("/products");
     }

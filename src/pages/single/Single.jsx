@@ -1,11 +1,9 @@
 import "./single.scss";
 import Sidebar from "../../components/sidebar/Sidebar";
 import Navbar from "../../components/navbar/Navbar";
-import Roles from "../../helper/roles";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
-const role = localStorage.getItem("role");
 const token = localStorage.getItem("token");
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
