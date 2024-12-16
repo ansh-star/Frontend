@@ -1,4 +1,4 @@
-import "./ProductDatatable.scss";
+import "./MyProductsDatatable.scss";
 import { DataGrid } from "@mui/x-data-grid";
 import { ProductColumns } from "../../datatablesource";
 import { Link, useNavigate } from "react-router-dom";
@@ -13,13 +13,11 @@ import {
   DialogContentText,
   DialogTitle,
 } from "@mui/material";
-import Roles from "../../helper/roles";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const token = localStorage.getItem("token");
-const role = localStorage.getItem("role");
 
-const ProductDatatable = () => {
+const MyProductsDatatable = () => {
   const [data, setData] = useState([]);
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
@@ -33,12 +31,11 @@ const ProductDatatable = () => {
     setIsLoading(true);
     try {
       const response = await axios.get(
-        `${BACKEND_URL}/api/product?pageNumber=${pageNumber}&limit=100`,
+        `${BACKEND_URL}/api/product/my?pageNumber=${pageNumber}&limit=100`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-          body: { Medicine_Name: 1, Composition: 1, mrp: 1, total_stock: 1 },
         }
       );
       if (response.data.success) {
@@ -63,7 +60,7 @@ const ProductDatatable = () => {
   const handleDelete = async () => {
     try {
       const response = await axios.delete(
-        `${BACKEND_URL}/api/product/${selectedId}`,
+        `${BACKEND_URL}/api/product/${selectedId}/my`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -113,71 +110,40 @@ const ProductDatatable = () => {
       getProduct(1, false);
     }
   };
-  const addProductToWhoelsaler = async (id) => {
-    try {
-      const response = await axios.put(
-        `${BACKEND_URL}/api/product/${id}/add`,
-        {},
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-      if (response.data.success) {
-        setData(data.filter((item) => item._id !== id));
-      }
-    } catch (error) {}
-  };
+
   const actionColumn = [
     {
       field: "action",
       headerName: "Action",
       width: 200,
       renderCell: (params) => {
-        if (role === Roles.ADMIN) {
-          return (
-            <div className="cellAction">
-              <Button
-                variant="contained"
-                style={{
-                  fontSize: "0.7em",
-                  padding: "0.2em 10px",
-                  minWidth: "30px",
-                }}
-                onClick={() => navigate(`/products/${params.row._id}/edit`)}
-              >
-                Edit
-              </Button>
-              <Button
-                variant="contained"
-                color="error"
-                onClick={() => handleDialogOpen(params.row._id)}
-                style={{
-                  fontSize: "0.7em",
-                  padding: "0.2em 10px",
-                  minWidth: "30px",
-                }}
-              >
-                Delete
-              </Button>
-            </div>
-          );
-        } else {
-          return (
-            <div className="cellAction">
-              <Button
-                variant="contained"
-                style={{
-                  fontSize: "0.7em",
-                  padding: "0.2em 10px",
-                  minWidth: "30px",
-                }}
-                onClick={() => addProductToWhoelsaler(params.row._id)}
-              >
-                Add
-              </Button>
-            </div>
-          );
-        }
+        return (
+          <div className="cellAction">
+            <Button
+              variant="contained"
+              style={{
+                fontSize: "0.7em",
+                padding: "0.2em 10px",
+                minWidth: "30px",
+              }}
+              onClick={() => navigate(`/products/${params.row._id}/edit`)}
+            >
+              Edit
+            </Button>
+            <Button
+              variant="contained"
+              color="error"
+              onClick={() => handleDialogOpen(params.row._id)}
+              style={{
+                fontSize: "0.7em",
+                padding: "0.2em 10px",
+                minWidth: "30px",
+              }}
+            >
+              Delete
+            </Button>
+          </div>
+        );
       },
     },
   ];
@@ -244,4 +210,4 @@ const ProductDatatable = () => {
   );
 };
 
-export default ProductDatatable;
+export default MyProductsDatatable;

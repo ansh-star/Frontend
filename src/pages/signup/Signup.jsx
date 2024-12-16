@@ -15,13 +15,14 @@ const Signup = () => {
     mobileNumber: "",
     location: "",
     dealershipLicenseNumber: "",
-    dealershipLicenseImage: "", // Base64 string
-    role: Roles.WHOLESALER, // Fixed role for this form
+    dealershipLicenseImages: [], // Array to store Base64 strings of images
+    role: Roles.WHOLESALER,
   });
   const [message, setMessage] = useState("");
   const [otpSent, setOtpSent] = useState(false);
   const [otp, setOtp] = useState("");
   const [signupStatus, setSignUpStatus] = useState(true);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -31,21 +32,40 @@ const Signup = () => {
   };
 
   const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
+    const files = e.target.files;
+    if (files.length !== 2) {
+      alert("Please upload exactly two images.");
+      return;
+    }
+
+    const fileReaders = Array.from(files).map((file) => {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result); // Resolve with Base64
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    });
+
+    Promise.all(fileReaders)
+      .then((images) => {
         setFormData({
           ...formData,
-          dealershipLicenseImage: reader.result, // Base64 string
+          dealershipLicenseImages: images, // Store both Base64 images
         });
-      };
-      reader.readAsDataURL(file);
-    }
+      })
+      .catch(() => {
+        alert("Failed to read files. Please try again.");
+      });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (formData.dealershipLicenseImages.length !== 2) {
+      alert("Please upload both dealership license images.");
+      return;
+    }
+
     try {
       setSignUpStatus(false);
       const response = await axios.post(
@@ -69,6 +89,7 @@ const Signup = () => {
       setSignUpStatus(true);
     }
   };
+
   const handleVerifyOtp = async () => {
     try {
       const response = await axios.post(`${BACKEND_URL}/api/user/verify-otp`, {
@@ -79,7 +100,6 @@ const Signup = () => {
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("role", Roles.WHOLESALER);
         navigate("/");
-        // Additional login success handling can go here
       } else {
         setMessage("Invalid OTP. Please try again.");
       }
@@ -88,6 +108,7 @@ const Signup = () => {
       console.error(error);
     }
   };
+
   return (
     <div className="signup-container">
       <h2 className="signup-title">Signup as Wholesaler</h2>
@@ -159,12 +180,14 @@ const Signup = () => {
           />
         </div>
         <div className="form-group">
-          <label className="form-label">Dealership License Image:</label>
+          <label className="form-label">Dealership License Images (2):</label>
           <input
             type="file"
-            name="dealershipLicenseImage"
+            name="dealershipLicenseImages"
             onChange={handleFileChange}
             className="form-input"
+            accept="image/*"
+            multiple
             required
           />
         </div>
@@ -178,7 +201,6 @@ const Signup = () => {
               placeholder="Enter the OTP"
               required
             />
-
             <button onClick={handleVerifyOtp} className="verify-button">
               Verify OTP
             </button>

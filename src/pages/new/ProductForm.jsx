@@ -14,7 +14,6 @@ const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 const ProductForm = () => {
   const { productId } = useParams();
-  const [file, setFile] = useState("");
   const [formData, setFormData] = useState({});
   const [cities, setCities] = useState([]);
   const [cityQuery, setCityQuery] = useState("");

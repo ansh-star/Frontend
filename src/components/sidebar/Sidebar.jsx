@@ -4,16 +4,15 @@ import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import CreditCardIcon from "@mui/icons-material/CreditCard";
 import StoreIcon from "@mui/icons-material/Store";
-import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import { Link } from "react-router-dom";
 import { DarkModeContext } from "../../context/darkModeContext";
 import { useContext } from "react";
 import Roles from "../../helper/roles";
+const role = localStorage.getItem("role");
 
 const Sidebar = () => {
   const { dispatch } = useContext(DarkModeContext);
-  const role = localStorage.getItem("role");
 
   return (
     <div className="sidebar">
@@ -31,7 +30,7 @@ const Sidebar = () => {
             <span>Dashboard</span>
           </li>
           <p className="title">LISTS</p>
-          {role == Roles.ADMIN && (
+          {role === Roles.ADMIN && (
             <Link to="/wholesaler-request" style={{ textDecoration: "none" }}>
               <li>
                 <PersonOutlineIcon className="icon" />
@@ -45,6 +44,14 @@ const Sidebar = () => {
               <span>Products</span>
             </li>
           </Link>
+          {role !== Roles.WHOLESALER && (
+            <Link to="/my-products" style={{ textDecoration: "none" }}>
+              <li>
+                <StoreIcon className="icon" />
+                <span>My Products</span>
+              </li>
+            </Link>
+          )}
           <li>
             <CreditCardIcon className="icon" />
             <span>Orders</span>
