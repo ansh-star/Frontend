@@ -186,6 +186,7 @@ const MyProductsDatatable = () => {
         }}
         loading={isLoading}
         rowCount={totalCount}
+        autoHeight
       />
 
       {/* Confirmation Dialog */}

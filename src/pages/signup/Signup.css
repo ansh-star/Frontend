@@ -79,7 +79,34 @@ body {
   background-color: #cccccc;
   cursor: not-allowed;
 }
-
+.cityDropdown {
+  position: absolute;
+  /* top: 0;
+  bottom: 100%; */
+  width: 500px;
+  max-height: 200px;
+  overflow-y: auto;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  padding: 0;
+}
+.cityDropdown li {
+  padding: 10px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  list-style-type: none;
+}
+.cityDropdown li:hover {
+  background-color: #f9f9f9;
+}
+.cityDropdown .noResults {
+  padding: 10px;
+  color: #888;
+  text-align: center;
+}
 /* Responsive design */
 @media (max-width: 768px) {
   .signup-container {

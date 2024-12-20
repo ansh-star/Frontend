@@ -41,6 +41,8 @@ const ProductDatatable = () => {
           body: { Medicine_Name: 1, Composition: 1, mrp: 1, total_stock: 1 },
         }
       );
+      console.log(response);
+
       if (response.data.success) {
         setData((prev) =>
           append ? [...prev, ...response.data.products] : response.data.products
@@ -220,6 +222,7 @@ const ProductDatatable = () => {
         }}
         loading={isLoading}
         rowCount={totalCount}
+        autoHeight
       />
 
       {/* Confirmation Dialog */}

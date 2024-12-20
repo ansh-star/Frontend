@@ -1,28 +1,43 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import "./Signup.css";
-import Roles from "../../helper/roles";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 const Signup = () => {
+  const [cities, setCities] = useState([]);
+
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     username: "",
     fullName: "",
+    password: "",
+    confirmPassword: "",
     shopOrHospitalName: "",
     mobileNumber: "",
     location: "",
     dealershipLicenseNumber: "",
     dealershipLicenseImages: [], // Array to store Base64 strings of images
-    role: Roles.WHOLESALER,
+    role: 1,
   });
   const [message, setMessage] = useState("");
-  const [otpSent, setOtpSent] = useState(false);
-  const [otp, setOtp] = useState("");
   const [signupStatus, setSignUpStatus] = useState(true);
-
+  const [cityQuery, setCityQuery] = useState("");
+  // Fetch cities from the backend
+  useEffect(() => {
+    if (cityQuery.length > 0) {
+      axios
+        .get(`${BACKEND_URL}/api/cities?prefix=${cityQuery}`)
+        .then((response) => {
+          if (response.data.success) setCities(response.data.cities);
+          else throw new Error("Error fetching cities");
+        })
+        .catch((error) => console.error("Error fetching cities:", error));
+    } else {
+      setCities([]);
+    }
+  }, [cityQuery]);
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -62,10 +77,13 @@ const Signup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (formData.dealershipLicenseImages.length !== 2) {
-      alert("Please upload both dealership license images.");
+      setMessage("Please upload both dealership license images.");
       return;
     }
-
+    if (formData.password !== formData.confirmPassword) {
+      setMessage("Passwords do not match.");
+      return;
+    }
     try {
       setSignUpStatus(false);
       const response = await axios.post(
@@ -76,36 +94,16 @@ const Signup = () => {
         }
       );
       if (response.data.success) {
-        setMessage("Signup successful. Please Enter your OTP.");
-        setOtpSent(true);
+        navigate("/verify-otp", {
+          state: { phoneNumber: formData.mobileNumber },
+        });
       } else {
         setMessage("Failed to sign up. Please try again.");
-        setOtpSent(false);
       }
     } catch (error) {
-      console.error("Error signing up user:", error.response?.data || error);
-      alert("Failed to sign up. Please try again.");
+      setMessage("Failed to sign up. Please try again.");
     } finally {
       setSignUpStatus(true);
-    }
-  };
-
-  const handleVerifyOtp = async () => {
-    try {
-      const response = await axios.post(`${BACKEND_URL}/api/user/verify-otp`, {
-        mobileNumber: formData.mobileNumber,
-        otp,
-      });
-      if (response.data.success) {
-        localStorage.setItem("token", response.data.token);
-        localStorage.setItem("role", Roles.WHOLESALER);
-        navigate("/");
-      } else {
-        setMessage("Invalid OTP. Please try again.");
-      }
-    } catch (error) {
-      setMessage("Error occurred while verifying OTP.");
-      console.error(error);
     }
   };
 
@@ -158,15 +156,55 @@ const Signup = () => {
           />
         </div>
         <div className="form-group">
+          <label className="form-label">Password:</label>
+          <input
+            type="text"
+            name="password"
+            value={formData.password}
+            onChange={handleChange}
+            className="form-input"
+            required
+          />
+        </div>
+        <div className="form-group">
+          <label className="form-label">Confirm Password:</label>
+          <input
+            type="text"
+            name="confirmPassword"
+            value={formData.confirmPassword}
+            onChange={handleChange}
+            className="form-input"
+            required
+          />
+        </div>
+        <div className="form-group">
           <label className="form-label">Location:</label>
           <input
             type="text"
             name="location"
             value={formData.location}
-            onChange={handleChange}
+            onChange={(e) => {
+              setCityQuery(e.target.value);
+              handleChange(e);
+            }}
             className="form-input"
             required
           />
+          {cities.length > 0 && (
+            <ul className="cityDropdown">
+              {cities.map((city) => (
+                <li
+                  key={city._id}
+                  onClick={() => {
+                    setFormData({ ...formData, location: city.city });
+                    setCityQuery("");
+                  }}
+                >
+                  {city.city}
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
         <div className="form-group">
           <label className="form-label">Dealership License Number:</label>
@@ -191,29 +229,13 @@ const Signup = () => {
             required
           />
         </div>
-        {otpSent ? (
-          <div className="form-group">
-            <label>OTP:</label>
-            <input
-              type="text"
-              value={otp}
-              onChange={(e) => setOtp(e.target.value)}
-              placeholder="Enter the OTP"
-              required
-            />
-            <button onClick={handleVerifyOtp} className="verify-button">
-              Verify OTP
-            </button>
-          </div>
-        ) : (
-          <button
-            onClick={handleSubmit}
-            className="submit-button"
-            disabled={!signupStatus}
-          >
-            {signupStatus ? "Signup" : "Sending OTP..."}
-          </button>
-        )}
+        <button
+          onClick={handleSubmit}
+          className="submit-button"
+          disabled={!signupStatus}
+        >
+          {signupStatus ? "Signup" : "Sending OTP..."}
+        </button>
         <p style={{ textAlign: "center" }}>
           Already have an account? <Link to="/login"> Login</Link>
         </p>

@@ -1,6 +1,5 @@
 import { useRef, useState } from "react";
 import "./price-cell.css";
-import EditPen from "../widget/Edit-pen";
 import axios from "axios";
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 export default function PriceCell({ params }) {
@@ -50,14 +49,6 @@ export default function PriceCell({ params }) {
           changePrice(e);
         }}
       />
-      {/* {!editing && (
-        <EditPen
-          onClick={() => {
-            setEditing(true);
-            setTimeout(() => pCell.current.focus(), 0);
-          }}
-        />
-      )} */}
     </div>
   );
 }

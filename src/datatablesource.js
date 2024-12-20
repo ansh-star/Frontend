@@ -1,5 +1,3 @@
-import PriceCell from "./components/price-cell/price-cell";
-
 export const WholesalerColumn = [
   { field: "_id", headerName: "ID", width: 70 },
   {
@@ -50,9 +48,6 @@ export const ProductColumns = [
     field: "mrp",
     headerName: "Price",
     width: 130,
-    renderCell: (params) => {
-      return <PriceCell params={params} />;
-    },
   },
   {
     field: "totalStock",
