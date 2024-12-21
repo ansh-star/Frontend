@@ -1,3 +1,5 @@
+import Roles from "./helper/roles";
+
 export const WholesalerColumn = [
   { field: "_id", headerName: "ID", width: 70 },
   {
@@ -53,6 +55,46 @@ export const ProductColumns = [
     field: "totalStock",
     headerName: "Total Stock",
     width: 130,
+  },
+];
+export const userColumns = [
+  {
+    field: "_id",
+    headerName: "ID",
+    width: 230,
+  },
+  {
+    field: "fullName",
+    headerName: "Full Name",
+    width: 230,
+  },
+  {
+    field: "mobileNumber",
+    headerName: "Mobile Number",
+    width: 230,
+  },
+  {
+    field: "role",
+    headerName: "Role",
+    width: 130,
+    renderCell: (params) => {
+      return (
+        <div className="cellRole">
+          {params.row.role == Roles.ADMIN && (
+            <div className="roleAdmin">Admin</div>
+          )}
+          {params.row.role == Roles.WHOLESALER && (
+            <div className="roleUser">Wholesaler</div>
+          )}
+          {params.row.role == Roles.RETAILER && (
+            <div className="roleUser">Retailer</div>
+          )}
+          {params.row.role === Roles.DELIVERY_PARTNER && (
+            <div className="roleUser">Delivery Partner</div>
+          )}
+        </div>
+      );
+    },
   },
 ];
 export const userRows = [
