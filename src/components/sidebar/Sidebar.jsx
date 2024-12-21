@@ -44,14 +44,14 @@ const Sidebar = () => {
               <span>Products</span>
             </li>
           </Link>
-          {role == Roles.WHOLESALER && (
-            <Link to="/my-products" style={{ textDecoration: "none" }}>
-              <li>
-                <StoreIcon className="icon" />
-                <span>My Products</span>
-              </li>
-            </Link>
-          )}
+
+          <Link to="/my-products" style={{ textDecoration: "none" }}>
+            <li>
+              <StoreIcon className="icon" />
+              <span>My Products</span>
+            </li>
+          </Link>
+
           {role == Roles.ADMIN && (
             <Link to="/users" style={{ textDecoration: "none" }}>
               <li>
