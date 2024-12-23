@@ -16,6 +16,7 @@ const Signup = () => {
     confirmPassword: "",
     shopOrHospitalName: "",
     mobileNumber: "",
+    email:"",
     location: "",
     dealershipLicenseNumber: "",
     dealershipLicenseImages: [], // Array to store Base64 strings of images
@@ -145,6 +146,17 @@ const Signup = () => {
           />
         </div>
         <div className="form-group">
+          <label className="form-label">Email:</label>
+          <input
+            type="email"
+            name="email"
+            value={formData.shopOrHospitalName}
+            onChange={handleChange}
+            className="form-input"
+            required
+          />
+        </div>
+        <div className="form-group">
           <label className="form-label">Mobile Number:</label>
           <input
             type="text"
@@ -158,7 +170,7 @@ const Signup = () => {
         <div className="form-group">
           <label className="form-label">Password:</label>
           <input
-            type="text"
+            type="password"
             name="password"
             value={formData.password}
             onChange={handleChange}
@@ -169,7 +181,7 @@ const Signup = () => {
         <div className="form-group">
           <label className="form-label">Confirm Password:</label>
           <input
-            type="text"
+            type="password"
             name="confirmPassword"
             value={formData.confirmPassword}
             onChange={handleChange}
