@@ -30,7 +30,7 @@ const Sidebar = () => {
             <span>Dashboard</span>
           </li>
           <p className="title">LISTS</p>
-          {role == Roles.ADMIN && (
+          {role === Roles.ADMIN && (
             <Link to="/wholesaler-request" style={{ textDecoration: "none" }}>
               <li>
                 <PersonOutlineIcon className="icon" />
@@ -52,7 +52,7 @@ const Sidebar = () => {
             </li>
           </Link>
 
-          {role == Roles.ADMIN && (
+          {role === Roles.ADMIN && (
             <Link to="/users" style={{ textDecoration: "none" }}>
               <li>
                 <PersonOutlineIcon className="icon" />

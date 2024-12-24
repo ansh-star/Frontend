@@ -81,8 +81,6 @@ body {
 }
 .cityDropdown {
   position: absolute;
-  /* top: 0;
-  bottom: 100%; */
   width: 500px;
   max-height: 200px;
   overflow-y: auto;

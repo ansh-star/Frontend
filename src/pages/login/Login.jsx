@@ -46,9 +46,10 @@ const Login = () => {
         mobileNumber: phoneNumber,
         password,
       });
-
       if (response.data.success) {
         if (response.data.user_verified) {
+          localStorage.setItem("token", response.data.token);
+          localStorage.setItem("role", response.data.user?.role);
           navigate("/");
         } else {
           setUserNotVerified(true);
@@ -57,7 +58,7 @@ const Login = () => {
         setMessage("Failed to Login. Please try again.");
       }
     } catch (error) {
-      setMessage("Error occurred while sending OTP.");
+      setMessage("Error occurred while Logging In.");
       console.error(error);
     } finally {
       setLoginStatus(true);

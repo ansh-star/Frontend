@@ -260,4 +260,10 @@ export const productInputs = [
     type: "number",
     placeholder: "Enter Total Stock",
   },
+  {
+    id: "discount",
+    label: "Discount",
+    type: "number",
+    placeholder: "Enter Discount",
+  },
 ];

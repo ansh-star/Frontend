@@ -16,7 +16,7 @@ const Signup = () => {
     confirmPassword: "",
     shopOrHospitalName: "",
     mobileNumber: "",
-    email:"",
+    email: "",
     location: "",
     dealershipLicenseNumber: "",
     dealershipLicenseImages: [], // Array to store Base64 strings of images
@@ -150,7 +150,7 @@ const Signup = () => {
           <input
             type="email"
             name="email"
-            value={formData.shopOrHospitalName}
+            value={formData.email}
             onChange={handleChange}
             className="form-input"
             required

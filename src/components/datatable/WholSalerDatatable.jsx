@@ -1,6 +1,6 @@
 import "./datatable.scss";
 import { DataGrid } from "@mui/x-data-grid";
-import { WholesalerColumn, userRows } from "../../datatablesource";
+import { WholesalerColumn } from "../../datatablesource";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Dialog from "@mui/material/Dialog";
@@ -17,7 +17,7 @@ const token = localStorage.getItem("token");
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 const WholeSalerDatatable = () => {
-  const [data, setData] = useState(userRows);
+  const [data, setData] = useState([]);
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [open, setOpen] = useState(false);
