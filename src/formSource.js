@@ -267,3 +267,11 @@ export const productInputs = [
     placeholder: "Enter Discount",
   },
 ];
+export const categoryInputs = [
+  {
+    id: "category_name",
+    label: "Category Name",
+    type: "text",
+    placeholder: "Enter category name",
+  },
+];

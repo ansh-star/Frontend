@@ -42,10 +42,11 @@ const Login = () => {
   const handleLogin = async () => {
     try {
       setLoginStatus(false);
-      const response = await axios.post(`${BACKEND_URL}/api/user/login`, {
+      var response = await axios.post(`${BACKEND_URL}/api/user/login`, {
         mobileNumber: phoneNumber,
         password,
       });
+      console.log(response);
       if (response.data.success) {
         if (response.data.user_verified) {
           localStorage.setItem("token", response.data.token);
@@ -55,11 +56,12 @@ const Login = () => {
           setUserNotVerified(true);
         }
       } else {
-        setMessage("Failed to Login. Please try again.");
+        setMessage(
+          response?.data?.message || "Failed to Login. Please try again."
+        );
       }
     } catch (error) {
-      setMessage("Error occurred while Logging In.");
-      console.error(error);
+      setMessage(response?.data?.message || "Error occurred while Logging In.");
     } finally {
       setLoginStatus(true);
     }

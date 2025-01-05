@@ -11,12 +11,15 @@ import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const token = localStorage.getItem("token");
 
 const ProductForm = () => {
   const { productId } = useParams();
   const [formData, setFormData] = useState({});
   const [cities, setCities] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [cityQuery, setCityQuery] = useState("");
+  const [categoryQuery, setCategoryQuery] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -47,6 +50,26 @@ const ProductForm = () => {
       setCities([]);
     }
   }, [cityQuery]);
+
+  // Fetch Categories from the backend
+  useEffect(() => {
+    if (categoryQuery.length > 0) {
+      axios
+        .get(`${BACKEND_URL}/api/category/search?prefix=${categoryQuery}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((response) => {
+          console.log(response);
+          if (response.data.success) setCategories(response.data.category);
+          else throw new Error("Error fetching categories");
+        })
+        .catch((error) => console.error("Error fetching categories:", error));
+    } else {
+      setCategories([]);
+    }
+  }, [categoryQuery]);
 
   const handleInputChange = (e, key) => {
     setFormData({ ...formData, [key]: e.target.value });
@@ -189,7 +212,37 @@ const ProductForm = () => {
                   </ul>
                 )}
               </div>
-
+              {/* Category Field */}
+              <div className="formInput">
+                <label>Category</label>
+                <input
+                  type="text"
+                  placeholder="Type to search cities..."
+                  value={formData?.category_name || ""}
+                  onChange={(e) => {
+                    setCategoryQuery(e.target.value);
+                    setFormData({ ...formData, category_name: e.target.value });
+                  }}
+                />
+                {categories.length > 0 && (
+                  <ul className="cityDropdown">
+                    {categories.map((category) => (
+                      <li
+                        key={category._id}
+                        onClick={() => {
+                          setFormData({
+                            ...formData,
+                            category_name: category.category_name,
+                          });
+                          setCategoryQuery("");
+                        }}
+                      >
+                        {category.category_name}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
               <div className="buttons-container">
                 <Button
                   variant="contained"

@@ -52,9 +52,23 @@ export const ProductColumns = [
     width: 130,
   },
   {
-    field: "totalStock",
+    field: "total_stock",
     headerName: "Total Stock",
     width: 130,
+  },
+];
+export const categoryColumn = [
+  { field: "_id", headerName: "ID", width: 230 },
+  {
+    field: "category_name",
+    headerName: "Category Name",
+    renderCell: (params) => (
+      <div className="cellWithImg">
+        <img className="cellImg" src={params.row.category_icon} alt="avatar" />
+        {params.row.category_name}
+      </div>
+    ),
+    width: 300,
   },
 ];
 export const userColumns = [
