@@ -19,14 +19,14 @@ const Home = () => {
       <Sidebar />
       <div className="homeContainer">
         <Navbar />
-        <div className="widgets">
-          {/* <Widget type="user" /> */}
+        {/* <div className="widgets">
+          <Widget type="user" />
           <Widget type="order" />
           <Widget type="earning" />
           <Widget type="balance" />
-        </div>
+        </div> */}
         <div className="listContainer">
-          <div className="listTitle">Latest Transactions</div>
+          {/* <div className="listTitle">Latest Transactions</div> */}
           <Table />
         </div>
       </div>
