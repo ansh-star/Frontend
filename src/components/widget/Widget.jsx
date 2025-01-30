@@ -1,55 +1,38 @@
 import "./widget.scss";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
-import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
-import AccountBalanceWalletOutlinedIcon from "@mui/icons-material/AccountBalanceWalletOutlined";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import MonetizationOnOutlinedIcon from "@mui/icons-material/MonetizationOnOutlined";
+import StorefrontOutlinedIcon from "@mui/icons-material/StorefrontOutlined";
+import LocalShippingOutlinedIcon from "@mui/icons-material/LocalShippingOutlined";
+import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
+import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined";
 
 const Widget = ({ type }) => {
   let data;
 
-  //temporary
+  // Temporary values
   const amount = 100;
   const diff = 20;
 
   switch (type) {
-    case "user":
+    case "totalOrders":
       data = {
-        title: "USERS",
-        isMoney: false,
-        link: "See all users",
-        icon: (
-          <PersonOutlinedIcon
-            className="icon"
-            style={{
-              color: "crimson",
-              backgroundColor: "rgba(255, 0, 0, 0.2)",
-            }}
-          />
-        ),
-      };
-      break;
-    case "order":
-      data = {
-        title: "ORDERS",
+        title: "TOTAL ORDERS",
         isMoney: false,
         link: "View all orders",
         icon: (
           <ShoppingCartOutlinedIcon
             className="icon"
-            style={{
-              backgroundColor: "rgba(218, 165, 32, 0.2)",
-              color: "goldenrod",
-            }}
+            style={{ backgroundColor: "rgba(218, 165, 32, 0.2)", color: "goldenrod" }}
           />
         ),
       };
       break;
-    case "earning":
+    case "totalSales":
       data = {
-        title: "EARNINGS",
+        title: "TOTAL SALES",
         isMoney: true,
-        link: "View net earnings",
+        link: "View total sales",
         icon: (
           <MonetizationOnOutlinedIcon
             className="icon"
@@ -58,23 +41,65 @@ const Widget = ({ type }) => {
         ),
       };
       break;
-    case "balance":
+    case "totalWholesalers":
       data = {
-        title: "BALANCE",
-        isMoney: true,
-        link: "See details",
+        title: "TOTAL WHOLESALERS",
+        isMoney: false,
+        link: "View all wholesalers",
         icon: (
-          <AccountBalanceWalletOutlinedIcon
+          <StorefrontOutlinedIcon
             className="icon"
-            style={{
-              backgroundColor: "rgba(128, 0, 128, 0.2)",
-              color: "purple",
-            }}
+            style={{ backgroundColor: "rgba(255, 99, 71, 0.2)", color: "tomato" }}
+          />
+        ),
+      };
+      break;
+    case "deliveryPartners":
+      data = {
+        title: "DELIVERY PARTNERS",
+        isMoney: false,
+        link: "View all delivery partners",
+        icon: (
+          <LocalShippingOutlinedIcon
+            className="icon"
+            style={{ backgroundColor: "rgba(30, 144, 255, 0.2)", color: "dodgerblue" }}
+          />
+        ),
+      };
+      break;
+    case "totalRetailers":
+      data = {
+        title: "TOTAL RETAILERS",
+        isMoney: false,
+        link: "View all retailers",
+        icon: (
+          <PersonOutlinedIcon
+            className="icon"
+            style={{ backgroundColor: "rgba(138, 43, 226, 0.2)", color: "blueviolet" }}
+          />
+        ),
+      };
+      break;
+    case "totalProducts":
+      data = {
+        title: "TOTAL PRODUCTS",
+        isMoney: false,
+        link: "View all products",
+        icon: (
+          <Inventory2OutlinedIcon
+            className="icon"
+            style={{ backgroundColor: "rgba(60, 179, 113, 0.2)", color: "mediumseagreen" }}
           />
         ),
       };
       break;
     default:
+      data = {
+        title: "UNKNOWN",
+        isMoney: false,
+        link: "N/A",
+        icon: null,
+      };
       break;
   }
 

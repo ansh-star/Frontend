@@ -10,6 +10,7 @@ import { Link } from "react-router-dom";
 import { DarkModeContext } from "../../context/darkModeContext";
 import { useContext } from "react";
 import Roles from "../../helper/roles";
+import logo from "../assets/logo.png";
 const role = localStorage.getItem("role");
 
 const Sidebar = () => {
@@ -18,10 +19,11 @@ const Sidebar = () => {
   return (
     <div className="sidebar">
       <div className="top">
-        <Link to="/" style={{ textDecoration: "none" }}>
-          <span className="logo">Updowner</span>
-        </Link>
-      </div>
+  <Link to="/" style={{ textDecoration: "none" }}>
+    <img src={logo} alt="Updowner Logo" className="logo-img" />
+  </Link>
+</div>
+
       <hr />
       <div className="center">
         <ul>
