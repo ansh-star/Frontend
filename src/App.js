@@ -17,6 +17,7 @@ import UserList from "./pages/list/UserList";
 import VerifyOTP from "./pages/verify-otp/VerifyOTP";
 import CategoryList from "./pages/list/CategoryList";
 import CategoryForm from "./pages/new/CategoryForm";
+import RetailerList from "./pages/list/RetailerList";
 
 function App() {
   const { darkMode } = useContext(DarkModeContext);
@@ -31,6 +32,7 @@ function App() {
             <Route path="verify-otp" element={<VerifyOTP />} />
             <Route path="signup" element={<Signup />} />
             <Route path="wholesaler-request" element={<WholeSalerList />} />
+            <Route path="retailer-request" element={<RetailerList />} />
             <Route path="category">
               <Route index element={<CategoryList />} />
               <Route path=":categoryId/edit" element={<CategoryForm />} />

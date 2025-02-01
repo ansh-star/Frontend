@@ -19,25 +19,35 @@ const Sidebar = () => {
   return (
     <div className="sidebar">
       <div className="top">
-  <Link to="/" style={{ textDecoration: "none" }}>
-    <img src={logo} alt="Updowner Logo" className="logo-img" />
-  </Link>
-</div>
+        <Link to="/" style={{ textDecoration: "none" }}>
+          <img src={logo} alt="Updowner Logo" className="logo-img" />
+        </Link>
+      </div>
 
       <hr />
       <div className="center">
         <ul>
           <p className="title">MAIN</p>
-          <li>
-            <DashboardIcon className="icon" />
-            <span>Dashboard</span>
-          </li>
+          <Link to="/" style={{ textDecoration: "none" }}>
+            <li>
+              <DashboardIcon className="icon" />
+              <span>Dashboard</span>
+            </li>
+          </Link>
           <p className="title">LISTS</p>
           {role === Roles.ADMIN && (
             <Link to="/wholesaler-request" style={{ textDecoration: "none" }}>
               <li>
                 <PersonOutlineIcon className="icon" />
                 <span>Wholesaler Requests</span>
+              </li>
+            </Link>
+          )}
+          {role === Roles.ADMIN && (
+            <Link to="/retailer-request" style={{ textDecoration: "none" }}>
+              <li>
+                <PersonOutlineIcon className="icon" />
+                <span>Retailer Requests</span>
               </li>
             </Link>
           )}
