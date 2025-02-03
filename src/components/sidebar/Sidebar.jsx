@@ -51,6 +51,22 @@ const Sidebar = () => {
               </li>
             </Link>
           )}
+          {role === Roles.ADMIN && (
+            <Link to="/wholesalers" style={{ textDecoration: "none" }}>
+              <li>
+                <PersonOutlineIcon className="icon" />
+                <span>Wholesalers</span>
+              </li>
+            </Link>
+          )}
+          {role === Roles.ADMIN && (
+            <Link to="/retailers" style={{ textDecoration: "none" }}>
+              <li>
+                <PersonOutlineIcon className="icon" />
+                <span>Retailers</span>
+              </li>
+            </Link>
+          )}
           <Link to="/products" style={{ textDecoration: "none" }}>
             <li>
               <StoreIcon className="icon" />
