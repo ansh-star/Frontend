@@ -41,9 +41,12 @@
     }
 
     .link {
-      font-size: 12px;
+      font-size: 13px;
       border-bottom: 1px solid gray;
       cursor: pointer;
+      text-decoration: none;
+      color: #787878;
+      font-weight: bolder;
     }
   }
 
