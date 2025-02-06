@@ -19,6 +19,8 @@ import CategoryList from "./pages/list/CategoryList";
 import CategoryForm from "./pages/new/CategoryForm";
 import RetailerList from "./pages/list/RetailerList";
 import OrderList from "./pages/list/OrderList";
+import Retailer from "./pages/list/Retailer"
+import Wholesaler  from "./pages/list/Wholesaler";
 
 function App() {
   const { darkMode } = useContext(DarkModeContext);
@@ -34,6 +36,8 @@ function App() {
             <Route path="signup" element={<Signup />} />
             <Route path="wholesaler-request" element={<WholeSalerList />} />
             <Route path="retailer-request" element={<RetailerList />} />
+            <Route path="wholesalers" element={<Wholesaler/>} />
+            <Route path="retailers" element={<Retailer/>} />
             <Route path="category">
               <Route index element={<CategoryList />} />
               <Route path=":categoryId/edit" element={<CategoryForm />} />
