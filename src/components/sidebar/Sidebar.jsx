@@ -7,14 +7,14 @@ import CategoryIcon from "@mui/icons-material/Category";
 import StoreIcon from "@mui/icons-material/Store";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import { Link } from "react-router-dom";
-import { DarkModeContext } from "../../context/darkModeContext";
-import { useContext } from "react";
+//import { DarkModeContext } from "../../context/darkModeContext";
+//import { useContext } from "react";
 import Roles from "../../helper/roles";
 import logo from "../assets/logo.png";
 const role = localStorage.getItem("role");
 
 const Sidebar = () => {
-  const { dispatch } = useContext(DarkModeContext);
+  //const { dispatch } = useContext(DarkModeContext);
 
   return (
     <div className="sidebar">

@@ -165,7 +165,7 @@ const OrderTable = () => {
 
   return (
     <div className="datatable">
-      <h2>Orders</h2>
+      {/* <h2>Orders</h2> */}
       <DataGrid
         rows={orders}
         columns={columns}
