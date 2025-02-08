@@ -1,4 +1,5 @@
 import "./widget.scss";
+import { Link } from "react-router-dom";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import MonetizationOnOutlinedIcon from "@mui/icons-material/MonetizationOnOutlined";
@@ -19,7 +20,8 @@ const Widget = ({ type }) => {
       data = {
         title: "TOTAL ORDERS",
         isMoney: false,
-        link: "View all orders",
+        link: "/orders",
+        linkText: "View all orders",
         icon: (
           <ShoppingCartOutlinedIcon
             className="icon"
@@ -32,7 +34,8 @@ const Widget = ({ type }) => {
       data = {
         title: "TOTAL SALES",
         isMoney: true,
-        link: "View total sales",
+        link: "/sales",
+        linkText: "View total sales",
         icon: (
           <MonetizationOnOutlinedIcon
             className="icon"
@@ -45,7 +48,8 @@ const Widget = ({ type }) => {
       data = {
         title: "TOTAL WHOLESALERS",
         isMoney: false,
-        link: "View all wholesalers",
+        link: "/wholesalers",
+        linkText: "View all wholesalers",
         icon: (
           <StorefrontOutlinedIcon
             className="icon"
@@ -58,7 +62,8 @@ const Widget = ({ type }) => {
       data = {
         title: "DELIVERY PARTNERS",
         isMoney: false,
-        link: "View all delivery partners",
+        link: "/delivery-partners",
+        linkText: "View all delivery partners",
         icon: (
           <LocalShippingOutlinedIcon
             className="icon"
@@ -71,7 +76,8 @@ const Widget = ({ type }) => {
       data = {
         title: "TOTAL RETAILERS",
         isMoney: false,
-        link: "View all retailers",
+        link: "/retailers",
+        linkText: "View all retailers",
         icon: (
           <PersonOutlinedIcon
             className="icon"
@@ -84,7 +90,8 @@ const Widget = ({ type }) => {
       data = {
         title: "TOTAL PRODUCTS",
         isMoney: false,
-        link: "View all products",
+        link: "/products",
+        linkText: "View all products",
         icon: (
           <Inventory2OutlinedIcon
             className="icon"
@@ -97,7 +104,8 @@ const Widget = ({ type }) => {
       data = {
         title: "UNKNOWN",
         isMoney: false,
-        link: "N/A",
+        link: "/",
+        linkText: "N/A",
         icon: null,
       };
       break;
@@ -110,7 +118,9 @@ const Widget = ({ type }) => {
         <span className="counter">
           {data.isMoney && "$"} {amount}
         </span>
-        <span className="link">{data.link}</span>
+        <Link to={data.link} className="link">
+          {data.linkText}
+        </Link>
       </div>
       <div className="right">
         <div className="percentage positive">

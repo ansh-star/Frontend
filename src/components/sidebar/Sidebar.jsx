@@ -19,25 +19,51 @@ const Sidebar = () => {
   return (
     <div className="sidebar">
       <div className="top">
-  <Link to="/" style={{ textDecoration: "none" }}>
-    <img src={logo} alt="Updowner Logo" className="logo-img" />
-  </Link>
-</div>
+        <Link to="/" style={{ textDecoration: "none" }}>
+          <img src={logo} alt="Updowner Logo" className="logo-img" />
+        </Link>
+      </div>
 
       <hr />
       <div className="center">
         <ul>
           <p className="title">MAIN</p>
-          <li>
-            <DashboardIcon className="icon" />
-            <span>Dashboard</span>
-          </li>
+          <Link to="/" style={{ textDecoration: "none" }}>
+            <li>
+              <DashboardIcon className="icon" />
+              <span>Dashboard</span>
+            </li>
+          </Link>
           <p className="title">LISTS</p>
           {role === Roles.ADMIN && (
             <Link to="/wholesaler-request" style={{ textDecoration: "none" }}>
               <li>
                 <PersonOutlineIcon className="icon" />
                 <span>Wholesaler Requests</span>
+              </li>
+            </Link>
+          )}
+          {role === Roles.ADMIN && (
+            <Link to="/retailer-request" style={{ textDecoration: "none" }}>
+              <li>
+                <PersonOutlineIcon className="icon" />
+                <span>Retailer Requests</span>
+              </li>
+            </Link>
+          )}
+          {role === Roles.ADMIN && (
+            <Link to="/wholesalers" style={{ textDecoration: "none" }}>
+              <li>
+                <PersonOutlineIcon className="icon" />
+                <span>Wholesalers</span>
+              </li>
+            </Link>
+          )}
+          {role === Roles.ADMIN && (
+            <Link to="/retailers" style={{ textDecoration: "none" }}>
+              <li>
+                <PersonOutlineIcon className="icon" />
+                <span>Retailers</span>
               </li>
             </Link>
           )}
@@ -69,10 +95,12 @@ const Sidebar = () => {
               <span>Categories</span>
             </li>
           </Link>
-          <li>
-            <CreditCardIcon className="icon" />
-            <span>Orders</span>
-          </li>
+          <Link to="/orders" style={{ textDecoration: "none" }}>
+            <li>
+              <CreditCardIcon className="icon" />
+              <span>Orders</span>
+            </li>
+          </Link>
           <li>
             <LocalShippingIcon className="icon" />
             <span>Delivery</span>
@@ -86,7 +114,7 @@ const Sidebar = () => {
           </Link>
         </ul>
       </div>
-      <div className="bottom">
+      {/* <div className="bottom">
         <div
           className="colorOption"
           onClick={() => dispatch({ type: "LIGHT" })}
@@ -95,7 +123,7 @@ const Sidebar = () => {
           className="colorOption"
           onClick={() => dispatch({ type: "DARK" })}
         ></div>
-      </div>
+      </div> */}
     </div>
   );
 };

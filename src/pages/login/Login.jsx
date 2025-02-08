@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import {
@@ -16,6 +16,8 @@ const Login = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [password, setPassword] = useState("");
   const [userNotVerified, setUserNotVerified] = useState(false);
+  const [loginAllowed, setLoginAllowed] = useState(false);
+  const isLoginAllowed = useRef();
   const navigate = useNavigate();
   const [message, setMessage] = useState("");
   const [loginStatus, setLoginStatus] = useState(true);
@@ -29,7 +31,9 @@ const Login = () => {
       });
 
       if (response.data.success) {
-        navigate("/verify-otp", { state: { phoneNumber } });
+        navigate("/verify-otp", {
+          state: { phoneNumber, isLoginAllowed: isLoginAllowed.current },
+        });
       } else {
         setMessage("Failed to Send OTP. Please try again.");
       }
@@ -49,9 +53,14 @@ const Login = () => {
       console.log(response);
       if (response.data.success) {
         if (response.data.user_verified) {
-          localStorage.setItem("token", response.data.token);
-          localStorage.setItem("role", response.data.user?.role);
-          navigate("/");
+          if (response.data.loginAllowed) {
+            localStorage.setItem("token", response.data.token);
+            localStorage.setItem("role", response.data.user?.role);
+            navigate("/");
+          } else {
+            isLoginAllowed.current = false;
+            setLoginAllowed(true);
+          }
         } else {
           setUserNotVerified(true);
         }
@@ -121,6 +130,20 @@ const Login = () => {
           </Button>
           <Button onClick={handleSendOtp} color="error" disabled={sendingOtp}>
             {sendingOtp ? "Sending OTP..." : "Send OTP"}
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog open={loginAllowed}>
+        <DialogTitle>Please Verify</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            You have not been verified by the admin yet. Please wait for the
+            admin to verify you.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setLoginAllowed(false)} color="success">
+            Ok
           </Button>
         </DialogActions>
       </Dialog>

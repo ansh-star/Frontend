@@ -25,10 +25,10 @@ const Navbar = () => {
       <div className="wrapper">
         <div className="items">
           <div className="item">
-            <DarkModeOutlinedIcon
+            {/* <DarkModeOutlinedIcon
               className="icon"
               onClick={() => dispatch({ type: "TOGGLE" })}
-            />
+            /> */}
           </div>
           <button className="deleteButton" onClick={handleLogout}>
             Logout
