@@ -1,5 +1,5 @@
 import Roles from "./helper/roles";
-
+import { Link } from "react-router-dom";
 export const WholesalerColumn = [
   { field: "_id", headerName: "ID", width: 70 },
   {
@@ -14,30 +14,49 @@ export const WholesalerColumn = [
   },
 ];
 export const ProductColumns = [
-  { field: "_id", headerName: "ID", width: 230 },
+  {
+    field: "_id",
+    headerName: "ID",
+    width: 230,
+    renderCell: (params) => {
+      return (
+        <Link
+          to={`/products/${params.row._id}/view`}
+          style={{ textDecoration: "none", color: "inherit" }}
+        >
+          {params.row._id}
+        </Link>
+      );
+    },
+  },
   {
     field: "Medicine Name",
     headerName: "Product Name",
     width: 230,
     renderCell: (params) => {
       return (
-        <div className="cellWithImg">
-          {params.row.Image_URLS.length !== 0 && (
-            <img
-              className="cellImg"
-              src={params.row.Image_URLS[0]}
-              alt="avatar"
-            />
-          )}
-          {params.row.Image_URLS.length === 0 && (
-            <img
-              className="cellImg"
-              src="https://watermarkimage1.s3.ap-south-1.amazonaws.com/watermarkimage.jpg"
-              alt="avatar"
-            />
-          )}
-          {params.row.Medicine_Name}
-        </div>
+        <Link
+          to={`/products/${params.row._id}/view`}
+          style={{ textDecoration: "none", color: "inherit" }}
+        >
+          <div className="cellWithImg">
+            {params.row.Image_URLS.length !== 0 && (
+              <img
+                className="cellImg"
+                src={params.row.Image_URLS[0]}
+                alt="avatar"
+              />
+            )}
+            {params.row.Image_URLS.length === 0 && (
+              <img
+                className="cellImg"
+                src="https://watermarkimage1.s3.ap-south-1.amazonaws.com/watermarkimage.jpg"
+                alt="avatar"
+              />
+            )}
+            {params.row.Medicine_Name}
+          </div>
+        </Link>
       );
     },
   },
@@ -57,6 +76,7 @@ export const ProductColumns = [
     width: 130,
   },
 ];
+
 export const categoryColumn = [
   { field: "_id", headerName: "ID", width: 230 },
   {

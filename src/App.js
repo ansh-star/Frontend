@@ -1,6 +1,7 @@
 import Home from "./pages/home/Home";
 import Login from "./pages/login/Login";
 import ProductForm from "./pages/new/ProductForm";
+import ProductView from "./pages/new/ProductView";
 import "./pages/login/Login.css";
 
 import { BrowserRouter, Routes, Route } from "react-router-dom";
@@ -21,6 +22,7 @@ import RetailerList from "./pages/list/RetailerList";
 import OrderList from "./pages/list/OrderList";
 import Retailer from "./pages/list/Retailer"
 import Wholesaler  from "./pages/list/Wholesaler";
+
 
 function App() {
   const { darkMode } = useContext(DarkModeContext);
@@ -50,6 +52,7 @@ function App() {
             <Route path="products">
               <Route index element={<ProductList />} />
               <Route path=":productId/edit" element={<ProductForm />} />
+              <Route path=":productId/view" element={<ProductView/>}/>
               <Route path="new" element={<ProductForm />} />
             </Route>
             <Route path="my-products">

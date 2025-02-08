@@ -133,11 +133,22 @@ const ProductDatatable = () => {
     {
       field: "action",
       headerName: "Action",
-      width: 200,
+      width: 220,
       renderCell: (params) => {
         if (role === Roles.ADMIN) {
           return (
             <div className="cellAction">
+              <Button
+                variant="contained"
+                style={{
+                  fontSize: "0.7em",
+                  padding: "0.2em 10px",
+                  minWidth: "30px",
+                }}
+                onClick={() => navigate(`/products/${params.row._id}/view`)}
+              >
+                View
+              </Button>
               <Button
                 variant="contained"
                 style={{
