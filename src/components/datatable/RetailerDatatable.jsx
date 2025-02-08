@@ -13,6 +13,7 @@ import {
   DialogTitle,
   DialogContentText,
 } from "@mui/material";
+import { toast } from "react-toastify";
 const token = localStorage.getItem("token");
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
@@ -80,6 +81,7 @@ const RetailerDatatable = () => {
   };
 
   const confirmDelete = async () => {
+    const toastId = toast.loading("Deleting Retailer...");
     try {
       const response = await axios.delete(
         `${BACKEND_URL}/api/user/${deleteId}`,
@@ -90,9 +92,18 @@ const RetailerDatatable = () => {
       } else {
         setData(data.filter((item) => item._id !== deleteId));
         closeDeleteDialog();
+        toast.update(toastId, {
+          render: "Retailer deleted successfully",
+          type: "success",
+          autoClose: 3000,
+        });
       }
     } catch (error) {
-      return;
+      toast.update(toastId, {
+        render: "Failed to delete Retailer",
+        type: "error",
+        autoClose: 3000,
+      });
     }
   };
   const verifyUser = async (id) => {

@@ -14,6 +14,7 @@ import {
   DialogTitle,
 } from "@mui/material";
 import Roles from "../../helper/roles";
+import { toast } from "react-toastify";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const token = localStorage.getItem("token");
@@ -41,7 +42,6 @@ const ProductDatatable = () => {
           body: { Medicine_Name: 1, Composition: 1, mrp: 1, total_stock: 1 },
         }
       );
-      console.log(response);
 
       if (response.data.success) {
         setData((prev) =>
@@ -63,6 +63,7 @@ const ProductDatatable = () => {
   }, [page]);
 
   const handleDelete = async () => {
+    const toastId = toast.loading("Deleting product...");
     try {
       const response = await axios.delete(
         `${BACKEND_URL}/api/product/${selectedId}`,
@@ -75,9 +76,17 @@ const ProductDatatable = () => {
       } else {
         setData(data.filter((item) => item._id !== selectedId));
         setOpen(false);
+        toast.update(toastId, {
+          render: "Product deleted successfully",
+          type: "success",
+          autoClose: 3000,
+        });
       }
     } catch (error) {
-      return;
+      toast.update(toastId, {
+        render: "Failed to delete product",
+        type: "error",
+      });
     }
   };
 
@@ -116,6 +125,7 @@ const ProductDatatable = () => {
     }
   };
   const addProductToWhoelsaler = async (id) => {
+    const toastId = toast.loading("Adding product to wholesaler...");
     try {
       const response = await axios.put(
         `${BACKEND_URL}/api/product/${id}/add`,
@@ -126,8 +136,23 @@ const ProductDatatable = () => {
       );
       if (response.data.success) {
         setData(data.filter((item) => item._id !== id));
+        toast.update(toastId, {
+          render: "Product added to wholesaler successfully!",
+          type: "success",
+          isLoading: false,
+          autoClose: 3000,
+        });
+      } else {
+        throw new Error(response.data.message);
       }
-    } catch (error) {}
+    } catch (error) {
+      toast.update(toastId, {
+        render: "Failed to add product to wholesaler",
+        type: "error",
+        isLoading: false,
+        autoClose: 3000,
+      });
+    }
   };
   const actionColumn = [
     {
