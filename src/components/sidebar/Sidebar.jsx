@@ -101,10 +101,10 @@ const Sidebar = () => {
               <span>Orders</span>
             </li>
           </Link>
-          <li>
+          {/* <li>
             <LocalShippingIcon className="icon" />
             <span>Delivery</span>
-          </li>
+          </li> */}
           <p className="title">USER</p>
           <Link to="/profile" style={{ textDecoration: "none" }}>
             <li>
