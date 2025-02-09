@@ -5,6 +5,7 @@ import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import CreditCardIcon from "@mui/icons-material/CreditCard";
 import CategoryIcon from "@mui/icons-material/Category";
 import StoreIcon from "@mui/icons-material/Store";
+import ReplayIcon from "@mui/icons-material/Replay";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import { Link } from "react-router-dom";
 //import { DarkModeContext } from "../../context/darkModeContext";
@@ -101,6 +102,12 @@ const Sidebar = () => {
               <span>Orders</span>
             </li>
           </Link>
+          <Link to="/refunds" style={{ textDecoration: "none" }}>
+  <li>
+    <ReplayIcon className="icon" />
+    <span>Refunds</span>
+  </li>
+</Link>
           {/* <li>
             <LocalShippingIcon className="icon" />
             <span>Delivery</span>

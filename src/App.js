@@ -22,7 +22,7 @@ import RetailerList from "./pages/list/RetailerList";
 import OrderList from "./pages/list/OrderList";
 import Retailer from "./pages/list/Retailer"
 import Wholesaler  from "./pages/list/Wholesaler";
-import Refund from "./pages/list/Refund";
+import Refunds from "./pages/list/Refunds";
 
 
 function App() {
@@ -61,7 +61,7 @@ function App() {
             </Route>
             <Route path="/users" element={<UserList />} />
             <Route path="orders" element={<OrderList />} />
-            <Route path="refund" element={<Refund/>} />
+            <Route path="refunds" element={<Refunds/>} />
           </Route>
         </Routes>
       </BrowserRouter>
