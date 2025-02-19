@@ -1,7 +1,6 @@
 import "./sidebar.scss";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
-import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import CreditCardIcon from "@mui/icons-material/CreditCard";
 import CategoryIcon from "@mui/icons-material/Category";
 import StoreIcon from "@mui/icons-material/Store";
@@ -103,11 +102,11 @@ const Sidebar = () => {
             </li>
           </Link>
           <Link to="/refunds" style={{ textDecoration: "none" }}>
-  <li>
-    <ReplayIcon className="icon" />
-    <span>Refunds</span>
-  </li>
-</Link>
+            <li>
+              <ReplayIcon className="icon" />
+              <span>Refunds</span>
+            </li>
+          </Link>
           {/* <li>
             <LocalShippingIcon className="icon" />
             <span>Delivery</span>

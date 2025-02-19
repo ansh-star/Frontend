@@ -1,27 +1,16 @@
 import { useEffect, useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import axios from "axios";
-import {
-  Button,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Select,
-  MenuItem,
-  InputLabel,
-  FormControl,
-} from "@mui/material";
+import { Button } from "@mui/material";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const ORDER_API_URL = `${BACKEND_URL}/api/refunds`; // Refunds API
-const PROCESS_REFUND_API_URL = `${BACKEND_URL}/api/order/refund`; // API to process refund
+const ORDER_API_URL = `${BACKEND_URL}/api/order/refund-order`; // Refunds API
+const PROCESS_REFUND_API_URL = `${BACKEND_URL}/api/payment/pay`; // API to process refund
 const token = localStorage.getItem("token");
 
 const RefundsTable = () => {
   const [refundOrders, setRefundOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-
   useEffect(() => {
     const fetchRefundOrders = async () => {
       setIsLoading(true);
@@ -47,14 +36,16 @@ const RefundsTable = () => {
     try {
       const response = await axios.post(
         PROCESS_REFUND_API_URL,
-        { order_id: orderId },
+        { orderId, amount: 1 },
         {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-
+      console.log(response);
       if (response.data.success) {
         alert("Refund processed successfully!");
+        window.location.href =
+          response.data.data.data.instrumentResponse.redirectInfo.url;
         setRefundOrders((prevOrders) =>
           prevOrders.map((order) =>
             order._id === orderId ? { ...order, status: "Refunded" } : order
@@ -96,7 +87,12 @@ const RefundsTable = () => {
       headerName: "Status",
       width: 130,
       renderCell: (params) => (
-        <span style={{ fontWeight: "bold", color: params.value === "Refunded" ? "green" : "red" }}>
+        <span
+          style={{
+            fontWeight: "bold",
+            color: params.value === "Refunded" ? "green" : "red",
+          }}
+        >
           {params.value}
         </span>
       ),
