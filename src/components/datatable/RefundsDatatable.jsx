@@ -4,8 +4,9 @@ import axios from "axios";
 import { Button } from "@mui/material";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const PAYMENT_API = process.env.REFUND_API;
 const ORDER_API_URL = `${BACKEND_URL}/api/order/refund-order`; // Refunds API
-const PROCESS_REFUND_API_URL = `${process.env.REFUND_API}/api/pay`; // API to process refund
+const PROCESS_REFUND_API_URL = `http://54.85.104.173:3000/api/pay`; // API to process refund
 const token = localStorage.getItem("token");
 
 const RefundsTable = () => {
@@ -34,6 +35,7 @@ const RefundsTable = () => {
   // Handle Refund Process
   const handleProcessRefund = async (orderId) => {
     try {
+      console.log(PROCESS_REFUND_API_URL);
       const response = await axios.post(
         PROCESS_REFUND_API_URL,
         { orderId, amount: 100 }, // Hardcoded amount for now
