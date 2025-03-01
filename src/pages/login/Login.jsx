@@ -49,8 +49,8 @@ const Login = () => {
       var response = await axios.post(`${BACKEND_URL}/api/user/login`, {
         mobileNumber: phoneNumber,
         password,
+        role: "website",
       });
-      console.log(response);
       if (response.data.success) {
         if (response.data.user_verified) {
           if (response.data.loginAllowed) {
