@@ -11,6 +11,7 @@ import {
   MenuItem,
   InputLabel,
   FormControl,
+  autocompleteClasses,
 } from "@mui/material";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
@@ -78,7 +79,6 @@ const OrderTable = () => {
 
   const handleAssignPartner = async () => {
     try {
-      console.log(selectedOrder, selectedPartner);
       const response = await axios.post(
         ASSIGN_DELIVERY_API_URL,
         {
@@ -89,7 +89,6 @@ const OrderTable = () => {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-      console.log(response);
       if (response.data.success) {
         alert("Delivery Partner Assigned Successfully");
         setOrders((prevOrders) =>
@@ -106,32 +105,30 @@ const OrderTable = () => {
       handleCloseAssignModal();
     }
   };
-
   const columns = [
     { field: "_id", headerName: "Order ID", width: 200 },
     {
       field: "createdAt",
       headerName: "Date",
       width: 180,
-      valueGetter: (params) => new Date(params.row.createdAt).toLocaleString(),
+      valueGetter: (params) => new Date(params.row.order_date).toLocaleString(),
     },
     {
-      field: "products",
       headerName: "Products",
       width: 250,
       renderCell: (params) => (
         <ul>
-          {params.row.products.map((item, index) => (
-            <li key={index}>
-              {item.productId.name} (x{item.quantity})
+          {params.row.products.map((item) => (
+            <li key={item._id}>
+              {`${item.productId.Medicine_Name} x${item.quantity}`}
             </li>
           ))}
         </ul>
       ),
     },
-    { field: "totalAmount", headerName: "Total Price", width: 150 },
+    { field: "order_amount", headerName: "Total Price", width: 150 },
     {
-      field: "status",
+      field: "order_status",
       headerName: "Status",
       width: 130,
       renderCell: (params) => (
@@ -146,14 +143,15 @@ const OrderTable = () => {
         <>
           <Button
             variant="contained"
-            onClick={() => handleViewOrder(params.row._id)}
+            style={{ fontSize: 10 }}
+            onClick={() => handleViewOrder(params.row)}
           >
             View
           </Button>
           <Button
             variant="contained"
             color="primary"
-            style={{ marginLeft: 8 }}
+            style={{ marginLeft: 10, fontSize: 10 }}
             onClick={() => handleOpenAssignModal(params.row._id)}
           >
             Assign Partner
@@ -165,7 +163,7 @@ const OrderTable = () => {
 
   return (
     <div className="datatable">
-      {/* <h2>Orders</h2> */}
+      <h2>Orders</h2>
       <DataGrid
         rows={orders}
         columns={columns}
@@ -173,6 +171,11 @@ const OrderTable = () => {
         getRowId={(row) => row._id}
         loading={isLoading}
         autoHeight
+        getRowHeight={() => "auto"}
+        getRowSpacing={(params) => ({
+          top: 8, // Top margin
+          bottom: 8, // Bottom margin
+        })}
       />
 
       {/* Order Details Modal */}
@@ -187,17 +190,17 @@ const OrderTable = () => {
           {selectedOrder && (
             <div>
               <p>
-                <strong>Order ID:</strong> {selectedOrder._id}
+                <strong>Order ID :</strong> {selectedOrder._id}
               </p>
               <p>
-                <strong>Date:</strong>
-                {new Date(selectedOrder.createdAt).toLocaleString()}
+                <strong>Date : </strong>
+                {new Date(selectedOrder.order_date).toLocaleString()}
               </p>
               <p>
-                <strong>Total Amount:</strong> ₹{selectedOrder.totalAmount}
+                <strong>Total Amount : </strong> ₹{selectedOrder.order_amount}
               </p>
               <p>
-                <strong>Status:</strong> {selectedOrder.status}
+                <strong>Status : </strong> {selectedOrder.order_status}
               </p>
             </div>
           )}

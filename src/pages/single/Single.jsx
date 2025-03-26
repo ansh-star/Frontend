@@ -66,17 +66,13 @@ const UserProfile = () => {
                   <div>Dealership License Image:</div>
                   <div className="detail-image-container">
                     <img
-                      src={
-                        "https://media.timeout.com/images/106041640/750/562/image.jpg"
-                      }
-                      alt=""
+                      src={user.dealershipLicenseImage[0]}
+                      alt="First License Image"
                       className="licenseImage"
                     />
                     <img
-                      src={
-                        "https://dfstudio-d420.kxcdn.com/wordpress/wp-content/uploads/2019/06/digital_camera_photo-1080x675.jpg"
-                      }
-                      alt=""
+                      src={user.dealershipLicenseImage[1]}
+                      alt="Second License Image"
                       className="licenseImage"
                     />
                   </div>
