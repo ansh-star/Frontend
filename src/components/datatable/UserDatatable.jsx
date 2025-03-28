@@ -1,7 +1,7 @@
 import "./datatable.scss";
 import { DataGrid } from "@mui/x-data-grid";
 import { userColumns } from "../../datatablesource";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
@@ -13,7 +13,7 @@ import {
   DialogContentText,
 } from "@mui/material";
 import Roles from "../../helper/roles";
-const token = localStorage.getItem("token");
+import { useNavigate } from "react-router-dom";
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 const UserDatatable = () => {
@@ -25,7 +25,15 @@ const UserDatatable = () => {
   const [adminDialogOpen, setAdminDialogOpen] = useState(false); // State for admin confirmation dialog
   const [deleteId, setDeleteId] = useState(null); // ID of the wholesaler to delete
   const [userId, setUserId] = useState(null); // ID of the user to make admin
-  useEffect(() => {}, [page]);
+  const token = useRef();
+  const navigate = useNavigate();
+  useEffect(() => {
+    token.current = localStorage.getItem("token");
+    if (!token.current) {
+      navigate("/login");
+      return;
+    }
+  }, []);
 
   const openDeleteDialog = (id) => {
     setDeleteId(id);
@@ -52,7 +60,7 @@ const UserDatatable = () => {
     try {
       const response = await axios.delete(
         `${BACKEND_URL}/api/user/${deleteId}`,
-        { headers: { Authorization: `Bearer ${token}` } }
+        { headers: { Authorization: `Bearer ${token.current}` } }
       );
       if (!response.data.success) {
         throw new Error(response.data.message);
@@ -108,7 +116,7 @@ const UserDatatable = () => {
       setIsLoading(true);
       const response = await axios.get(
         `${BACKEND_URL}/api/user/search?mobileNumber=${searchValue}`,
-        { headers: { Authorization: `Bearer ${token}` } }
+        { headers: { Authorization: `Bearer ${token.current}` } }
       );
       if (!response.data.success) {
         throw new Error(response.data.message);
@@ -126,7 +134,7 @@ const UserDatatable = () => {
       const response = await axios.put(
         `${BACKEND_URL}/api/user/make-admin`,
         { id: userId },
-        { headers: { Authorization: `Bearer ${token}` } }
+        { headers: { Authorization: `Bearer ${token.current}` } }
       );
       if (!response.data.success) {
         throw new Error(response.data.message);

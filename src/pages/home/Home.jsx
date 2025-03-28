@@ -2,17 +2,35 @@ import Sidebar from "../../components/sidebar/Sidebar";
 import Navbar from "../../components/navbar/Navbar";
 import "./home.scss";
 import Widget from "../../components/widget/Widget";
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const Home = () => {
   const navigate = useNavigate();
-  
+  const token = useRef();
+  const [stats, setStats] = useState({});
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      navigate("/login");
+    async function getUserStats() {
+      const response = await axios.get(
+        `${process.env.REACT_APP_BACKEND_URL}/api/user/stats`,
+        {
+          headers: { Authorization: `Bearer ${token.current}` },
+        }
+      );
+      console.log(response);
+      if (response.data.success) {
+        setStats(response.data);
+      } else {
+        console.error(response.data.message);
+      }
     }
+    token.current = localStorage.getItem("token");
+    if (!token.current) {
+      navigate("/login");
+      return;
+    }
+    getUserStats();
   }, []);
 
   return (
@@ -21,12 +39,15 @@ const Home = () => {
       <div className="homeContainer">
         <Navbar />
         <div className="widgets">
-          <Widget type="totalOrders" />
-          <Widget type="totalSales" />
-          <Widget type="totalWholesalers" />
-          <Widget type="deliveryPartners" />
-          <Widget type="totalRetailers" />
-          <Widget type="totalProducts" />
+          <Widget type="totalOrders" amount={stats.totalOrders} />
+          <Widget type="totalSales" amount={stats.totalSales} />
+          <Widget type="totalWholesalers" amount={stats.totalWholesalers} />
+          <Widget
+            type="deliveryPartners"
+            amount={stats.totalDeliveryPartners}
+          />
+          <Widget type="totalRetailers" amount={stats.totalRetailers} />
+          <Widget type="totalProducts" amount={stats.totalProducts} />
         </div>
       </div>
     </div>

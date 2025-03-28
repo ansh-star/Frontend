@@ -14,7 +14,6 @@ import {
   DialogContentText,
 } from "@mui/material";
 import { toast } from "react-toastify";
-const token = localStorage.getItem("token");
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 const RetailerDatatable = () => {
@@ -27,7 +26,7 @@ const RetailerDatatable = () => {
   const [tabIndex, setTabIndex] = useState(0);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false); // State for delete confirmation dialog
   const [deleteId, setDeleteId] = useState(null); // ID of the wholesaler to delete
-
+  let token;
   async function getRetailers() {
     try {
       setIsLoading(true);
@@ -50,7 +49,7 @@ const RetailerDatatable = () => {
       setIsLoading(false);
     }
   }
-
+  useEffect(() => {});
   useEffect(() => {
     getRetailers();
   }, [page]);

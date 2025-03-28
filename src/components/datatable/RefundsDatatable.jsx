@@ -2,16 +2,18 @@ import { useEffect, useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import axios from "axios";
 import { Button } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const PAYMENT_API = process.env.REFUND_API;
 const ORDER_API_URL = `${BACKEND_URL}/api/order/refund-order`; // Refunds API
 const PROCESS_REFUND_API_URL = `http://54.85.104.173:3000/api/pay`; // API to process refund
-const token = localStorage.getItem("token");
 
 const RefundsTable = () => {
   const [refundOrders, setRefundOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
+  let token;
   useEffect(() => {
     const fetchRefundOrders = async () => {
       setIsLoading(true);
@@ -28,7 +30,11 @@ const RefundsTable = () => {
         setIsLoading(false);
       }
     };
-
+    token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/login");
+      return;
+    }
     fetchRefundOrders();
   }, []);
 

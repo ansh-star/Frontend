@@ -15,7 +15,6 @@ import {
 } from "@mui/material";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const token = localStorage.getItem("token");
 
 const MyProductsDatatable = () => {
   const [data, setData] = useState([]);
@@ -26,6 +25,14 @@ const MyProductsDatatable = () => {
   const [gridPage, setGridPage] = useState(0); // For DataGrid pagination
   const [totalCount, setTotalCount] = useState(0);
   const navigate = useNavigate();
+
+  let token;
+  useEffect(() => {
+    token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/login");
+    }
+  }, []);
 
   async function getProduct(pageNumber = 1, append = false) {
     setIsLoading(true);

@@ -11,10 +11,15 @@ import { Link } from "react-router-dom";
 //import { useContext } from "react";
 import Roles from "../../helper/roles";
 import logo from "../assets/logo.png";
-const role = localStorage.getItem("role");
-
+import { useEffect, useState } from "react";
+const ADMIN = Roles.ADMIN;
 const Sidebar = () => {
   //const { dispatch } = useContext(DarkModeContext);
+  const [role, setRole] = useState();
+
+  useEffect(() => {
+    setRole(localStorage.getItem("role"));
+  }, []);
 
   return (
     <div className="sidebar">
@@ -35,7 +40,7 @@ const Sidebar = () => {
             </li>
           </Link>
           <p className="title">LISTS</p>
-          {role === Roles.ADMIN && (
+          {role === ADMIN && (
             <Link to="/wholesaler-request" style={{ textDecoration: "none" }}>
               <li>
                 <PersonOutlineIcon className="icon" />
@@ -43,7 +48,7 @@ const Sidebar = () => {
               </li>
             </Link>
           )}
-          {role === Roles.ADMIN && (
+          {role === ADMIN && (
             <Link to="/retailer-request" style={{ textDecoration: "none" }}>
               <li>
                 <PersonOutlineIcon className="icon" />
@@ -51,7 +56,7 @@ const Sidebar = () => {
               </li>
             </Link>
           )}
-          {role === Roles.ADMIN && (
+          {role === ADMIN && (
             <Link to="/wholesalers" style={{ textDecoration: "none" }}>
               <li>
                 <PersonOutlineIcon className="icon" />
@@ -59,7 +64,7 @@ const Sidebar = () => {
               </li>
             </Link>
           )}
-          {role === Roles.ADMIN && (
+          {role === ADMIN && (
             <Link to="/retailers" style={{ textDecoration: "none" }}>
               <li>
                 <PersonOutlineIcon className="icon" />
@@ -81,7 +86,7 @@ const Sidebar = () => {
             </li>
           </Link>
 
-          {role === Roles.ADMIN && (
+          {role === ADMIN && (
             <Link to="/users" style={{ textDecoration: "none" }}>
               <li>
                 <PersonOutlineIcon className="icon" />

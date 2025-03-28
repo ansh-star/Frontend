@@ -13,12 +13,12 @@ import {
   FormControl,
   autocompleteClasses,
 } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const ORDER_API_URL = `${BACKEND_URL}/api/order`;
 const DELIVERY_PARTNERS_API_URL = `${BACKEND_URL}/api/delivery-partners`;
 const ASSIGN_DELIVERY_API_URL = `${BACKEND_URL}/api/order/assign`;
-const token = localStorage.getItem("token");
 
 const OrderTable = () => {
   const [orders, setOrders] = useState([]);
@@ -28,7 +28,8 @@ const OrderTable = () => {
   const [deliveryPartners, setDeliveryPartners] = useState([]);
   const [selectedPartner, setSelectedPartner] = useState("");
   const [orderDetailsModalOpen, setOrderDetailsModalOpen] = useState(false);
-
+  const navigate = useNavigate();
+  let token;
   useEffect(() => {
     const fetchOrders = async () => {
       setIsLoading(true);
@@ -45,7 +46,11 @@ const OrderTable = () => {
         setIsLoading(false);
       }
     };
-
+    token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/login");
+      return;
+    }
     fetchOrders();
   }, []);
 

@@ -2,7 +2,7 @@ import "./ProductDatatable.scss";
 import { DataGrid } from "@mui/x-data-grid";
 import { ProductColumns } from "../../datatablesource";
 import { Link, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import axios from "axios";
 import {
@@ -17,8 +17,6 @@ import Roles from "../../helper/roles";
 import { toast } from "react-toastify";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const token = localStorage.getItem("token");
-const role = localStorage.getItem("role");
 
 const ProductDatatable = () => {
   const [data, setData] = useState([]);
@@ -29,7 +27,16 @@ const ProductDatatable = () => {
   const [gridPage, setGridPage] = useState(0); // For DataGrid pagination
   const [totalCount, setTotalCount] = useState(0);
   const navigate = useNavigate();
-
+  const token = useRef();
+  const role = useRef();
+  useEffect(() => {
+    token.current = localStorage.getItem("token");
+    role.current = localStorage.getItem("role");
+    if (!token.current) {
+      navigate("/login");
+      return;
+    }
+  }, []);
   async function getProduct(pageNumber = 1, append = false) {
     setIsLoading(true);
     try {
@@ -37,7 +44,7 @@ const ProductDatatable = () => {
         `${BACKEND_URL}/api/product?pageNumber=${pageNumber}&limit=100`,
         {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${token.current}`,
           },
           body: { Medicine_Name: 1, Composition: 1, mrp: 1, total_stock: 1 },
         }
@@ -68,7 +75,7 @@ const ProductDatatable = () => {
       const response = await axios.delete(
         `${BACKEND_URL}/api/product/${selectedId}`,
         {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: { Authorization: `Bearer ${token.current}` },
         }
       );
       if (!response.data.success) {
@@ -107,7 +114,7 @@ const ProductDatatable = () => {
       const response = await axios.get(
         `${BACKEND_URL}/api/product/search?search=${search}&limit=100`,
         {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: { Authorization: `Bearer ${token.current}` },
         }
       );
       if (response.data.success) {
@@ -131,7 +138,7 @@ const ProductDatatable = () => {
         `${BACKEND_URL}/api/product/${id}/add`,
         {},
         {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: { Authorization: `Bearer ${token.current}` },
         }
       );
       if (response.data.success) {
@@ -146,8 +153,9 @@ const ProductDatatable = () => {
         throw new Error(response.data.message);
       }
     } catch (error) {
+      console.log(error);
       toast.update(toastId, {
-        render: "Failed to add product to wholesaler",
+        render: error.message || "Failed to add product to wholesaler",
         type: "error",
         isLoading: false,
         autoClose: 3000,

@@ -1,7 +1,7 @@
 import "./datatable.scss";
 import { DataGrid } from "@mui/x-data-grid";
 import { WholesalerColumn } from "../../datatablesource";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
@@ -13,7 +13,7 @@ import {
   DialogTitle,
   DialogContentText,
 } from "@mui/material";
-const token = localStorage.getItem("token");
+import { useNavigate } from "react-router-dom";
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 const WholeSalerDatatable = () => {
@@ -26,7 +26,8 @@ const WholeSalerDatatable = () => {
   const [tabIndex, setTabIndex] = useState(0);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false); // State for delete confirmation dialog
   const [deleteId, setDeleteId] = useState(null); // ID of the wholesaler to delete
-
+  const token = useRef();
+  const navigate = useNavigate();
   async function getWholesalers() {
     try {
       setIsLoading(true);
@@ -49,6 +50,14 @@ const WholeSalerDatatable = () => {
       setIsLoading(false);
     }
   }
+
+  useEffect(() => {
+    token.current = localStorage.getItem("token");
+    if (!token.current) {
+      navigate("/login");
+      return;
+    }
+  }, []);
 
   useEffect(() => {
     getWholesalers();

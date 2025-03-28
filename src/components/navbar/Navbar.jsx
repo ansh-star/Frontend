@@ -1,22 +1,13 @@
 import "./navbar.scss";
-import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
-import { DarkModeContext } from "../../context/darkModeContext";
-import { useContext } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 const Navbar = () => {
-  const { dispatch } = useContext(DarkModeContext);
   const navigate = useNavigate();
   const handleLogout = async () => {
     const token = localStorage.getItem("token");
-    const response = await axios.post(
-      `${process.env.REACT_APP_BACKEND_URL}/api/user/logout`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    if (!token) {
+      navigate("/login");
+      return;
+    }
     localStorage.clear();
     navigate("/login");
   };
