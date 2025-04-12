@@ -2,7 +2,7 @@ import "./ProductDatatable.scss";
 import { DataGrid } from "@mui/x-data-grid";
 import { categoryColumn } from "../../datatablesource";
 import { Link, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import axios from "axios";
 import {
@@ -25,21 +25,43 @@ const CategoryDatatable = () => {
   const [gridPage, setGridPage] = useState(0); // For DataGrid pagination
   const [totalCount, setTotalCount] = useState(0);
   const navigate = useNavigate();
-
-  let token;
+  const token = useRef();
   useEffect(() => {
-    token = localStorage.getItem("token");
-    if (!token) {
+    token.current = localStorage.getItem("token");
+    if (!token.current) {
       navigate("/login");
     }
   }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setIsLoading(true);
+        const response = await axios.get(
+          `${BACKEND_URL}/api/category?limit=${10}&page=${page}`,
+          { headers: { Authorization: `Bearer ${token.current}` } }
+        );
+        if (!response.data.success) {
+          throw new Error(response.data.message);
+        } else {
+          setData((prev) => [...prev, ...(response.data?.categories || [])]);
+          setTotalCount(response.data?.totalDocuments);
+        }
+      } catch (error) {
+        return;
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchData();
+  }, [page]);
 
   const handleDelete = async () => {
     try {
       const response = await axios.delete(
         `${BACKEND_URL}/api/category/${selectedId}`,
         {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: { Authorization: `Bearer ${token.current}` },
         }
       );
       if (!response.data.success) {
@@ -70,7 +92,7 @@ const CategoryDatatable = () => {
       const response = await axios.get(
         `${BACKEND_URL}/api/category/search?prefix=${search}`,
         {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: { Authorization: `Bearer ${token.current}` },
         }
       );
       if (response.data.success) {

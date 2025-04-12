@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import axios from "axios";
 import {
@@ -11,7 +11,6 @@ import {
   MenuItem,
   InputLabel,
   FormControl,
-  autocompleteClasses,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
@@ -28,17 +27,34 @@ const OrderTable = () => {
   const [deliveryPartners, setDeliveryPartners] = useState([]);
   const [selectedPartner, setSelectedPartner] = useState("");
   const [orderDetailsModalOpen, setOrderDetailsModalOpen] = useState(false);
+  const [page, setPage] = useState(1);
+  const [gridPage, setGridPage] = useState(0); // For DataGrid pagination
+  const [totalCount, setTotalCount] = useState(0); // Total count of orders
+
   const navigate = useNavigate();
-  let token;
+  const token = useRef();
+  useEffect(() => {
+    token.current = localStorage.getItem("token");
+    if (!token.current) {
+      navigate("/login");
+      return;
+    }
+  }, []);
   useEffect(() => {
     const fetchOrders = async () => {
       setIsLoading(true);
       try {
-        const response = await axios.get(ORDER_API_URL, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const response = await axios.get(
+          `${ORDER_API_URL}?limit=${10}&page=${page}`,
+          {
+            headers: { Authorization: `Bearer ${token.current}` },
+          }
+        );
+
+        console.log(response.data);
         if (response.data.success) {
-          setOrders(response.data.orders);
+          setOrders((prev) => [...prev, ...response.data.orders]);
+          setTotalCount(response.data.totalOrdersCount);
         }
       } catch (error) {
         console.error("Error fetching orders:", error);
@@ -46,19 +62,15 @@ const OrderTable = () => {
         setIsLoading(false);
       }
     };
-    token = localStorage.getItem("token");
-    if (!token) {
-      navigate("/login");
-      return;
-    }
     fetchOrders();
-  }, []);
-
+  }, [page]);
   const handleViewOrder = (order) => {
     setOrderDetailsModalOpen(true);
     setSelectedOrder(order);
   };
-
+  useEffect(() => {
+    console.log(orders);
+  }, [orders]);
   const handleCloseModal = () => {
     setOrderDetailsModalOpen(false);
     setSelectedOrder(null);
@@ -67,7 +79,7 @@ const OrderTable = () => {
   const handleOpenAssignModal = async (order) => {
     try {
       const response = await axios.get(DELIVERY_PARTNERS_API_URL, {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${token.current}` },
       });
       setDeliveryPartners(response?.data?.partners);
       setAssignModalOpen(true);
@@ -91,15 +103,19 @@ const OrderTable = () => {
           deliveryPartner: selectedPartner,
         },
         {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: { Authorization: `Bearer ${token.current}` },
         }
       );
       if (response.data.success) {
         alert("Delivery Partner Assigned Successfully");
         setOrders((prevOrders) =>
           prevOrders.map((order) =>
-            order._id === selectedOrder._id
-              ? { ...order, deliveryPartner: selectedPartner }
+            order._id === selectedOrder
+              ? {
+                  ...order,
+                  assigned: selectedPartner,
+                  order_status: "Assigned",
+                }
               : order
           )
         );
@@ -108,10 +124,25 @@ const OrderTable = () => {
       console.error("Error assigning delivery partner:", error);
     } finally {
       handleCloseAssignModal();
+      console.log(orders);
     }
   };
   const columns = [
-    { field: "_id", headerName: "Order ID", width: 200 },
+    {
+      field: "_id",
+      headerName: "Order ID",
+      width: 200,
+    },
+    {
+      field: "user_id",
+      headerName: "Full Name",
+      width: 200,
+      renderCell: (params) => (
+        <span style={{ fontWeight: "bold" }}>
+          {params.row.user_id.fullName}
+        </span>
+      ),
+    },
     {
       field: "createdAt",
       headerName: "Date",
@@ -153,14 +184,16 @@ const OrderTable = () => {
           >
             View
           </Button>
-          <Button
-            variant="contained"
-            color="primary"
-            style={{ marginLeft: 10, fontSize: 10 }}
-            onClick={() => handleOpenAssignModal(params.row._id)}
-          >
-            Assign Partner
-          </Button>
+          {(!params.row.assigned || params.row.assigned === "") && (
+            <Button
+              variant="contained"
+              color="primary"
+              style={{ marginLeft: 10, fontSize: 10 }}
+              onClick={() => handleOpenAssignModal(params.row._id)}
+            >
+              Assign Partner
+            </Button>
+          )}
         </>
       ),
     },
@@ -181,6 +214,15 @@ const OrderTable = () => {
           top: 8, // Top margin
           bottom: 8, // Bottom margin
         })}
+        pagination
+        page={gridPage} // Controlled pagination state
+        onPageChange={(newPage) => {
+          setGridPage(newPage);
+          if ((newPage + 1) * 10 >= orders.length) {
+            setPage((prev) => prev + 1);
+          }
+        }}
+        rowCount={totalCount}
       />
 
       {/* Order Details Modal */}

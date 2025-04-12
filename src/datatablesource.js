@@ -123,7 +123,7 @@ export const userColumns = [
           {params.row.role == Roles.RETAILER && (
             <div className="roleUser">Retailer</div>
           )}
-          {params.row.role === Roles.DELIVERY_PARTNER && (
+          {params.row.role == Roles.DELIVERY_PARTNER && (
             <div className="roleUser">Delivery Partner</div>
           )}
         </div>

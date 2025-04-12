@@ -1,7 +1,8 @@
 import "./datatable.scss";
 import { DataGrid } from "@mui/x-data-grid";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
@@ -11,6 +12,7 @@ const WholesalersDatatable = () => {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const token = useRef();
+  const navigate = useNavigate();
   // Fetch all wholesalers with pagination
   async function getWholesalers(page = 1) {
     try {

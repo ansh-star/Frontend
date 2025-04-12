@@ -4,9 +4,9 @@ import Navbar from "../../components/navbar/Navbar";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import dealershipLicenseImagePlaceholder from "../../components/assets/delarship.jpeg";
 const token = localStorage.getItem("token");
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-
 const UserProfile = () => {
   const [user, setUser] = useState({});
   useEffect(() => {
@@ -66,12 +66,20 @@ const UserProfile = () => {
                   <div>Dealership License Image:</div>
                   <div className="detail-image-container">
                     <img
-                      src={user.dealershipLicenseImage[0]}
+                      src={
+                        user?.dealershipLicenseImage?.length > 0
+                          ? user.dealershipLicenseImage[0]
+                          : dealershipLicenseImagePlaceholder
+                      }
                       alt="First License Image"
                       className="licenseImage"
                     />
                     <img
-                      src={user.dealershipLicenseImage[1]}
+                      src={
+                        user?.dealershipLicenseImage?.length > 1
+                          ? user.dealershipLicenseImage[0]
+                          : dealershipLicenseImagePlaceholder
+                      }
                       alt="Second License Image"
                       className="licenseImage"
                     />

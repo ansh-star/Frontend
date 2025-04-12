@@ -5,10 +5,12 @@ import Widget from "../../components/widget/Widget";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import Roles from "../../helper/roles";
 
 const Home = () => {
   const navigate = useNavigate();
   const token = useRef();
+  const [role, setRole] = useState();
   const [stats, setStats] = useState({});
   useEffect(() => {
     async function getUserStats() {
@@ -26,6 +28,7 @@ const Home = () => {
       }
     }
     token.current = localStorage.getItem("token");
+    setRole(localStorage.getItem("role"));
     if (!token.current) {
       navigate("/login");
       return;
@@ -41,12 +44,16 @@ const Home = () => {
         <div className="widgets">
           <Widget type="totalOrders" amount={stats.totalOrders} />
           <Widget type="totalSales" amount={stats.totalSales} />
-          <Widget type="totalWholesalers" amount={stats.totalWholesalers} />
-          <Widget
-            type="deliveryPartners"
-            amount={stats.totalDeliveryPartners}
-          />
-          <Widget type="totalRetailers" amount={stats.totalRetailers} />
+          {role === Roles.ADMIN && (
+            <>
+              <Widget type="totalWholesalers" amount={stats.totalWholesalers} />
+              <Widget
+                type="deliveryPartners"
+                amount={stats.totalDeliveryPartners}
+              />
+              <Widget type="totalRetailers" amount={stats.totalRetailers} />
+            </>
+          )}
           <Widget type="totalProducts" amount={stats.totalProducts} />
         </div>
       </div>

@@ -25,6 +25,7 @@ const UserDatatable = () => {
   const [adminDialogOpen, setAdminDialogOpen] = useState(false); // State for admin confirmation dialog
   const [deleteId, setDeleteId] = useState(null); // ID of the wholesaler to delete
   const [userId, setUserId] = useState(null); // ID of the user to make admin
+  const [totalCount, setTotalCount] = useState(0); // Total count of users
   const token = useRef();
   const navigate = useNavigate();
   useEffect(() => {
@@ -34,7 +35,29 @@ const UserDatatable = () => {
       return;
     }
   }, []);
-
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setIsLoading(true);
+        const response = await axios.get(
+          `${BACKEND_URL}/api/user?limit=${10}&page=${page}`,
+          { headers: { Authorization: `Bearer ${token.current}` } }
+        );
+        console.log(response);
+        if (!response.data.success) {
+          throw new Error(response.data.message);
+        } else {
+          setData((prev) => [...prev, ...(response.data?.users || [])]);
+          setTotalCount(response.data?.totalDocuments);
+        }
+      } catch (error) {
+        return;
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchData();
+  }, [page]);
   const openDeleteDialog = (id) => {
     setDeleteId(id);
     setDeleteDialogOpen(true);
@@ -111,7 +134,6 @@ const UserDatatable = () => {
   const handleSearch = async (e) => {
     e.preventDefault();
     const searchValue = e.target[0].value;
-    console.log("searchValue", searchValue);
     try {
       setIsLoading(true);
       const response = await axios.get(
@@ -183,6 +205,7 @@ const UserDatatable = () => {
           }
         }}
         loading={isLoading}
+        rowCount={totalCount}
         autoHeight
       />
       {/* Admin Confirmation Dialog */}

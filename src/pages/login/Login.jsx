@@ -9,6 +9,7 @@ import {
   DialogContentText,
   DialogTitle,
 } from "@mui/material";
+import EyeIcon from "../../components/widget/EyeIcon";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
@@ -22,6 +23,7 @@ const Login = () => {
   const [message, setMessage] = useState("");
   const [loginStatus, setLoginStatus] = useState(true);
   const [sendingOtp, setSendingOtp] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const handleSendOtp = async () => {
     try {
       setSendingOtp(true);
@@ -81,7 +83,7 @@ const Login = () => {
 
   return (
     <>
-      <div className="login-container">
+      <form className="login-container">
         <h2>Admin Login</h2>
         <div className="form-group">
           <label>Phone Number:</label>
@@ -93,18 +95,20 @@ const Login = () => {
             required
           />
         </div>
-        <div className="form-group">
+        <div className="form-group password-field">
           <label>Password:</label>
           <input
-            type="password"
+            type={showPassword ? "text" : "password"}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Enter your password"
             required
           />
+          <EyeIcon setShowPassword={setShowPassword} />
         </div>
         <button
           onClick={handleLogin}
+          type="submit"
           className="submit-button"
           disabled={!loginStatus}
         >
@@ -115,7 +119,7 @@ const Login = () => {
         </p>
 
         {message && <p>{message}</p>}
-      </div>
+      </form>
       <Dialog open={userNotVerified}>
         <DialogTitle>Please Verify</DialogTitle>
         <DialogContent>
